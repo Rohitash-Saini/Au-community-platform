@@ -1,0 +1,1389 @@
+/* =========================================================
+   STUDENT OPPORTUNITY
+   AU Community - Navy / Orange / Lavender Theme
+========================================================= */
+
+:root {
+  --so-navy: #1b1740;
+  --so-navy-2: #2a2560;
+  --so-orange: #ff9a1f;
+  --so-orange-dark: #e07f00;
+  --so-lavender: #b9b4ea;
+  --so-bg: #f1f0f7;
+  --so-card: #ffffff;
+  --so-ink: #1d1a38;
+  --so-muted: #6b6889;
+  --so-line: #e4e2f0;
+  --so-success: #22a06b;
+  --so-danger: #d6334a;
+  --so-blue: #3578a8;
+  --so-shadow: 0 10px 30px rgba(27, 23, 64, 0.08);
+  --so-shadow-hover: 0 18px 42px rgba(27, 23, 64, 0.14);
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.student-opportunity-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 4px 0 40px;
+  color: var(--so-ink);
+  font-family: "Inter", sans-serif;
+}
+
+.student-opportunity-page *,
+.student-opportunity-page *::before,
+.student-opportunity-page *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.student-opportunity-hero {
+  position: relative;
+  min-height: 300px;
+  overflow: hidden;
+  margin-bottom: 22px;
+  padding: 44px 46px;
+  border-radius: 22px;
+  background:
+    radial-gradient(circle at 84% 18%,
+      rgba(255, 154, 31, 0.23),
+      transparent 28%),
+    radial-gradient(circle at 72% 100%,
+      rgba(185, 180, 234, 0.17),
+      transparent 32%),
+    linear-gradient(135deg, var(--so-navy), var(--so-navy-2));
+  box-shadow: var(--so-shadow);
+}
+
+.student-opportunity-hero-content {
+  position: relative;
+  z-index: 3;
+  width: min(720px, 72%);
+}
+
+.student-opportunity-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding: 7px 13px;
+  border: 1px solid rgba(255, 154, 31, 0.3);
+  border-radius: 999px;
+  color: #ffd69a;
+  background: rgba(255, 154, 31, 0.1);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-opportunity-eyebrow::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--so-orange);
+  box-shadow: 0 0 0 5px rgba(255, 154, 31, 0.12);
+}
+
+.student-opportunity-hero h1 {
+  margin: 0 0 11px;
+  color: #ffffff;
+  font-size: clamp(30px, 4vw, 45px);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.student-opportunity-hero p {
+  max-width: 650px;
+  margin: 0 0 23px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 14px;
+  line-height: 1.75;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.student-opportunity-search {
+  position: relative;
+  width: min(560px, 100%);
+}
+
+.student-opportunity-search input {
+  width: 100%;
+  height: 49px;
+  padding: 0 18px 0 47px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 13px;
+  outline: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.student-opportunity-search input::placeholder {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.student-opportunity-search input:focus {
+  border-color: var(--so-orange);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 0 0 3px rgba(255, 154, 31, 0.12);
+}
+
+.opportunity-search-icon {
+  position: absolute;
+  z-index: 2;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-52%);
+  color: #ffffff;
+  font-size: 22px;
+  pointer-events: none;
+}
+
+/* =========================================================
+   HERO ART
+========================================================= */
+
+.student-opportunity-hero-art {
+  position: absolute;
+  top: 50%;
+  right: 55px;
+  width: 235px;
+  height: 235px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.opportunity-orbit {
+  position: absolute;
+  inset: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+}
+
+.opportunity-orbit-two {
+  inset: 38px;
+  border-color: rgba(255, 154, 31, 0.22);
+}
+
+.opportunity-orbit-two::after {
+  content: "";
+  position: absolute;
+  inset: 28px;
+  border: 1px solid rgba(185, 180, 234, 0.22);
+  border-radius: 50%;
+}
+
+.opportunity-center-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 74px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  color: var(--so-navy);
+  background: var(--so-orange);
+  box-shadow:
+    0 0 0 12px rgba(255, 154, 31, 0.08),
+    0 15px 30px rgba(0, 0, 0, 0.18);
+  font-size: 29px;
+}
+
+.opportunity-floating-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  font-size: 15px;
+}
+
+.opportunity-float-one {
+  top: 20px;
+  left: 34px;
+}
+
+.opportunity-float-two {
+  top: 23px;
+  right: 25px;
+}
+
+.opportunity-float-three {
+  right: 1px;
+  bottom: 46px;
+}
+
+.opportunity-float-four {
+  bottom: 20px;
+  left: 28px;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.student-opportunity-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.student-opportunity-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  padding: 17px;
+  border: 1px solid var(--so-line);
+  border-radius: 17px;
+  background: var(--so-card);
+  box-shadow: var(--so-shadow);
+}
+
+.student-opportunity-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: var(--so-orange-dark);
+  background: rgba(255, 154, 31, 0.12);
+  font-size: 19px;
+}
+
+.student-opportunity-stat:nth-child(2) .student-opportunity-stat-icon {
+  color: var(--so-navy);
+  background: rgba(185, 180, 234, 0.28);
+}
+
+.student-opportunity-stat:nth-child(3) .student-opportunity-stat-icon {
+  color: var(--so-blue);
+  background: rgba(53, 120, 168, 0.11);
+}
+
+.student-opportunity-stat:nth-child(4) .student-opportunity-stat-icon {
+  color: var(--so-success);
+  background: rgba(34, 160, 107, 0.11);
+}
+
+.student-opportunity-stat strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--so-ink);
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.student-opportunity-stat span {
+  color: var(--so-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.student-opportunity-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  min-height: 64px;
+  margin-bottom: 22px;
+  padding: 10px 14px;
+  border: 1px solid var(--so-line);
+  border-radius: 17px;
+  background: var(--so-card);
+  box-shadow: var(--so-shadow);
+}
+
+.student-opportunity-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.student-opportunity-filter {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  color: var(--so-muted);
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.student-opportunity-filter:hover {
+  color: var(--so-navy);
+  background: #f5f3fb;
+}
+
+.student-opportunity-filter.active {
+  color: #ffffff;
+  background: var(--so-navy);
+  box-shadow: 0 5px 12px rgba(27, 23, 64, 0.18);
+}
+
+.student-opportunity-result-count {
+  flex-shrink: 0;
+  color: var(--so-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.student-opportunity-section {
+  width: 100%;
+}
+
+.student-opportunity-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 16px;
+}
+
+.student-opportunity-section-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--so-navy);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.student-opportunity-section-title::before {
+  content: "";
+  width: 5px;
+  height: 21px;
+  border-radius: 999px;
+  background: var(--so-orange);
+}
+
+.student-opportunity-search-result {
+  color: var(--so-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.student-opportunity-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 260px;
+  border: 1px solid var(--so-line);
+  border-radius: 18px;
+  background: var(--so-card);
+  color: var(--so-muted);
+}
+
+.student-opportunity-loading p {
+  margin: 13px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.student-opportunity-loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e9e7f2;
+  border-top-color: var(--so-orange);
+  border-radius: 50%;
+  animation: studentOpportunitySpin 0.8s linear infinite;
+}
+
+@keyframes studentOpportunitySpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+.student-opportunity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.student-opportunity-card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--so-line);
+  border-radius: 19px;
+  background: var(--so-card);
+  box-shadow: var(--so-shadow);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.student-opportunity-card:hover {
+  transform: translateY(-5px);
+  border-color: #d5d1e8;
+  box-shadow: var(--so-shadow-hover);
+}
+
+/* =========================================================
+   CARD TOP
+========================================================= */
+
+.student-opportunity-card-top {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  min-height: 92px;
+  padding: 18px;
+  background:
+    radial-gradient(circle at 88% 20%,
+      rgba(255, 154, 31, 0.18),
+      transparent 30%),
+    linear-gradient(135deg, #f8f7fc, #f0eef8);
+}
+
+.student-opportunity-category-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 13px;
+  color: var(--so-navy);
+  background: #ffffff;
+  box-shadow: 0 6px 15px rgba(27, 23, 64, 0.08);
+  font-size: 21px;
+}
+
+.opportunity-category-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: var(--so-navy);
+  background: rgba(185, 180, 234, 0.42);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.opportunity-status {
+  position: absolute;
+  top: 18px;
+  right: 16px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 27px;
+  padding: 0 9px;
+  border-radius: 999px;
+  color: var(--so-success);
+  background: rgba(34, 160, 107, 0.1);
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.opportunity-status::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-right: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.opportunity-status.closed {
+  color: var(--so-danger);
+  background: rgba(214, 51, 74, 0.08);
+}
+
+/* =========================================================
+   CARD BODY
+========================================================= */
+
+.student-opportunity-card-body {
+  flex: 1;
+  padding: 18px;
+}
+
+.student-opportunity-card-body h3 {
+  margin: 0 0 5px;
+  color: var(--so-ink);
+  font-size: 17px;
+  line-height: 1.35;
+  font-weight: 800;
+}
+
+.opportunity-organization {
+  margin: 0 0 12px;
+  color: var(--so-orange-dark);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.student-opportunity-description {
+  display: -webkit-box;
+  min-height: 58px;
+  margin: 0 0 14px;
+  overflow: hidden;
+  color: var(--so-muted);
+  font-size: 12px;
+  line-height: 1.65;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
+/* =========================================================
+   META
+========================================================= */
+
+.student-opportunity-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid var(--so-line);
+  border-radius: 11px;
+  background: #faf9fd;
+}
+
+.student-opportunity-meta span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--so-muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.student-opportunity-meta b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 17px;
+  color: var(--so-orange-dark);
+  font-size: 12px;
+}
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.student-opportunity-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 13px;
+}
+
+.student-opportunity-skills span {
+  padding: 5px 8px;
+  border-radius: 7px;
+  color: var(--so-navy);
+  background: #f0eef8;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.student-opportunity-skills .opportunity-more-skills {
+  color: var(--so-orange-dark);
+  background: rgba(255, 154, 31, 0.1);
+}
+
+/* =========================================================
+   CARD ACTIONS
+========================================================= */
+
+.student-opportunity-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  padding: 0 18px 18px;
+}
+
+.student-opportunity-actions button {
+  height: 39px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.opportunity-view-btn {
+  border: 1px solid var(--so-line);
+  color: var(--so-navy);
+  background: #ffffff;
+}
+
+.opportunity-view-btn:hover {
+  border-color: var(--so-navy);
+  background: #f7f6fb;
+}
+
+.opportunity-apply-btn {
+  border: 1px solid var(--so-orange);
+  color: #ffffff;
+  background: var(--so-orange);
+}
+
+.opportunity-apply-btn:hover {
+  border-color: var(--so-orange-dark);
+  background: var(--so-orange-dark);
+  transform: translateY(-1px);
+}
+
+.opportunity-applied-btn {
+  border: 1px solid rgba(34, 160, 107, 0.25);
+  color: var(--so-success);
+  background: rgba(34, 160, 107, 0.08);
+  cursor: default !important;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.student-opportunity-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 290px;
+  padding: 35px;
+  border: 1px dashed #d8d5e6;
+  border-radius: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.student-opportunity-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: var(--so-orange-dark);
+  background: rgba(255, 154, 31, 0.12);
+  font-size: 25px;
+}
+
+.student-opportunity-empty h3 {
+  margin: 0 0 6px;
+  color: var(--so-navy);
+  font-size: 18px;
+}
+
+.student-opportunity-empty p {
+  max-width: 430px;
+  margin: 0 0 17px;
+  color: var(--so-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.student-opportunity-empty button {
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 9px;
+  color: #ffffff;
+  background: var(--so-navy);
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.student-opportunity-empty button:hover {
+  background: var(--so-navy-2);
+}
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.student-opportunity-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  overflow: hidden;
+  margin-top: 26px;
+  padding: 25px 30px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 85% 50%,
+      rgba(255, 154, 31, 0.2),
+      transparent 30%),
+    var(--so-navy);
+  box-shadow: var(--so-shadow);
+}
+
+.student-opportunity-cta::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -60px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.student-opportunity-cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.student-opportunity-cta-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffd18d;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-opportunity-cta h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.student-opportunity-cta p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.student-opportunity-cta-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 53px;
+  height: 53px;
+  border-radius: 14px;
+  color: var(--so-navy);
+  background: var(--so-orange);
+  font-size: 21px;
+}
+
+/* =========================================================
+   MODAL OVERLAY
+========================================================= */
+
+.student-opportunity-modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(15, 12, 38, 0.68);
+  backdrop-filter: blur(7px);
+}
+
+.student-opportunity-modal {
+  position: relative;
+  width: min(650px, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(15, 12, 38, 0.3);
+  animation: studentOpportunityModalIn 0.2s ease;
+}
+
+@keyframes studentOpportunityModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* =========================================================
+   MODAL HEADER
+========================================================= */
+
+.student-opportunity-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--so-line);
+  background: linear-gradient(180deg, #ffffff, #fbfaff);
+}
+
+.opportunity-modal-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.student-opportunity-modal-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 58px;
+  height: 58px;
+  border-radius: 15px;
+  color: var(--so-navy);
+  background: rgba(255, 154, 31, 0.12);
+  font-size: 24px;
+}
+
+.opportunity-modal-category {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--so-orange-dark);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.opportunity-modal-heading h2 {
+  margin: 0 0 3px;
+  color: var(--so-ink);
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.opportunity-modal-heading p {
+  margin: 0;
+  color: var(--so-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.opportunity-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--so-line);
+  border-radius: 10px;
+  color: var(--so-muted);
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 21px;
+  line-height: 1;
+  transition: 0.2s ease;
+}
+
+.opportunity-modal-close:hover {
+  color: var(--so-danger);
+  border-color: rgba(214, 51, 74, 0.2);
+  background: rgba(214, 51, 74, 0.05);
+}
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.student-opportunity-modal-body {
+  padding: 22px 24px;
+}
+
+.opportunity-modal-description {
+  margin: 0 0 20px;
+  color: var(--so-muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.opportunity-modal-meta {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.opportunity-modal-meta>div {
+  padding: 13px;
+  border: 1px solid var(--so-line);
+  border-radius: 11px;
+  background: #faf9fd;
+}
+
+.opportunity-modal-meta strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--so-muted);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.opportunity-modal-meta span {
+  color: var(--so-ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.opportunity-modal-skills {
+  margin-top: 19px;
+}
+
+.opportunity-modal-skills h4 {
+  margin: 0 0 9px;
+  color: var(--so-navy);
+  font-size: 13px;
+}
+
+.opportunity-modal-skills>div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.opportunity-modal-skills span {
+  padding: 6px 9px;
+  border-radius: 7px;
+  color: var(--so-navy);
+  background: #f0eef8;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   MODAL FOOTER
+========================================================= */
+
+.student-opportunity-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--so-line);
+  background: #faf9fd;
+}
+
+.student-opportunity-modal-foot button {
+  min-width: 110px;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.opportunity-modal-secondary {
+  border: 1px solid var(--so-line);
+  color: var(--so-navy);
+  background: #ffffff;
+}
+
+.opportunity-modal-secondary:hover {
+  border-color: var(--so-navy);
+  background: #f7f6fb;
+}
+
+.opportunity-modal-primary {
+  border: 1px solid var(--so-orange);
+  color: #ffffff;
+  background: var(--so-orange);
+}
+
+.opportunity-modal-primary:hover:not(:disabled) {
+  border-color: var(--so-orange-dark);
+  background: var(--so-orange-dark);
+}
+
+.opportunity-modal-primary:disabled {
+  border-color: rgba(34, 160, 107, 0.2);
+  color: var(--so-success);
+  background: rgba(34, 160, 107, 0.08);
+  cursor: default;
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.student-opportunity-toast {
+  position: fixed;
+  z-index: 2000;
+  right: 25px;
+  bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(380px, calc(100vw - 40px));
+  padding: 13px 17px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ffffff;
+  background: var(--so-navy);
+  box-shadow: 0 15px 40px rgba(27, 23, 64, 0.25);
+  font-size: 12px;
+  font-weight: 650;
+  animation: studentOpportunityToastIn 0.25s ease;
+}
+
+.student-opportunity-toast::before {
+  content: "✓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  color: var(--so-navy);
+  background: var(--so-orange);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+@keyframes studentOpportunityToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+  .student-opportunity-hero {
+    padding: 38px;
+  }
+
+  .student-opportunity-hero-content {
+    width: 75%;
+  }
+
+  .student-opportunity-hero-art {
+    right: 20px;
+    opacity: 0.68;
+    transform: translateY(-50%) scale(0.85);
+  }
+
+  .student-opportunity-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .student-opportunity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 820px
+========================================================= */
+
+@media (max-width: 820px) {
+  .student-opportunity-hero {
+    min-height: 300px;
+    padding: 32px 28px;
+  }
+
+  .student-opportunity-hero-content {
+    width: 100%;
+  }
+
+  .student-opportunity-hero-art {
+    right: -45px;
+    bottom: -60px;
+    top: auto;
+    transform: scale(0.65);
+    transform-origin: bottom right;
+    opacity: 0.32;
+  }
+
+  .student-opportunity-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 13px;
+  }
+
+  .student-opportunity-result-count {
+    padding-left: 3px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 620px
+========================================================= */
+
+@media (max-width: 620px) {
+  .student-opportunity-hero {
+    min-height: auto;
+    padding: 28px 22px 30px;
+    border-radius: 18px;
+  }
+
+  .student-opportunity-hero h1 {
+    font-size: 31px;
+  }
+
+  .student-opportunity-hero p {
+    font-size: 13px;
+  }
+
+  .student-opportunity-search input {
+    height: 45px;
+  }
+
+  .student-opportunity-hero-art {
+    display: none;
+  }
+
+  .student-opportunity-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .student-opportunity-stat {
+    min-height: 76px;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .student-opportunity-stat-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+    font-size: 15px;
+  }
+
+  .student-opportunity-stat strong {
+    font-size: 19px;
+  }
+
+  .student-opportunity-stat span {
+    font-size: 9px;
+  }
+
+  .student-opportunity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-opportunity-filter-group {
+    width: 100%;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .student-opportunity-filter-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .student-opportunity-filter {
+    flex: 0 0 auto;
+  }
+
+  .student-opportunity-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .student-opportunity-cta {
+    align-items: flex-start;
+    padding: 21px;
+  }
+
+  .student-opportunity-cta h3 {
+    font-size: 17px;
+  }
+
+  .student-opportunity-cta-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .student-opportunity-modal-overlay {
+    padding: 12px;
+  }
+
+  .student-opportunity-modal {
+    border-radius: 17px;
+  }
+
+  .student-opportunity-modal-head {
+    padding: 18px;
+  }
+
+  .student-opportunity-modal-body {
+    padding: 18px;
+  }
+
+  .opportunity-modal-meta {
+    grid-template-columns: 1fr;
+  }
+
+  .student-opportunity-modal-foot {
+    padding: 14px 18px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 420px
+========================================================= */
+
+@media (max-width: 420px) {
+  .student-opportunity-hero {
+    padding: 24px 18px 25px;
+  }
+
+  .student-opportunity-eyebrow {
+    font-size: 9px;
+  }
+
+  .student-opportunity-hero h1 {
+    font-size: 27px;
+  }
+
+  .student-opportunity-stats {
+    gap: 8px;
+  }
+
+  .student-opportunity-stat {
+    padding: 10px;
+  }
+
+  .student-opportunity-stat-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+
+  .student-opportunity-stat strong {
+    font-size: 17px;
+  }
+
+  .student-opportunity-stat span {
+    font-size: 8px;
+  }
+
+  .student-opportunity-card-body {
+    padding: 16px;
+  }
+
+  .student-opportunity-actions {
+    grid-template-columns: 1fr;
+    padding: 0 16px 16px;
+  }
+
+  .student-opportunity-modal-head {
+    padding: 17px;
+  }
+
+  .opportunity-modal-heading {
+    gap: 10px;
+  }
+
+  .student-opportunity-modal-icon {
+    width: 49px;
+    height: 49px;
+  }
+
+  .opportunity-modal-heading h2 {
+    font-size: 17px;
+  }
+
+  .student-opportunity-modal-foot {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .student-opportunity-modal-foot button {
+    width: 100%;
+  }
+
+  .student-opportunity-toast {
+    right: 15px;
+    bottom: 15px;
+  }
+}

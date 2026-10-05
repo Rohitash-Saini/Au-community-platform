@@ -1,0 +1,339 @@
+/* ========================================================
+   AUTH OPTIONS & FORGOT PASSWORD LINK
+   ======================================================== */
+
+.auth-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+}
+
+.forgot-password-link {
+    color: #ff8a19;
+    font-size: 11px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password-link:hover {
+    color: #ffa64d;
+    text-decoration: underline;
+}
+
+/* ========================================================
+   RESPONSIVE DESIGN
+   ======================================================== */
+
+
+/* ========================================================
+   TABLET
+   <= 1100px
+   ======================================================== */
+
+@media (max-width: 1100px) {
+
+    .auth-brand-section {
+        width: 45%;
+        padding: 42px 5%;
+    }
+
+    .auth-form-section {
+        width: 55%;
+        padding: 45px 6%;
+    }
+
+    .auth-brand-content h1 {
+        font-size: 46px;
+    }
+
+}
+
+
+/* ========================================================
+   SMALL TABLET
+   <= 900px
+   ======================================================== */
+
+@media (max-width: 900px) {
+
+    .auth-page {
+        overflow-y: auto;
+    }
+
+    .auth-brand-section {
+        width: 42%;
+        padding: 35px 4%;
+    }
+
+    .auth-form-section {
+        width: 58%;
+        padding: 40px 5%;
+    }
+
+    .auth-brand-content h1 {
+        font-size: 40px;
+        letter-spacing: -1.5px;
+    }
+
+    .auth-brand-content>p {
+        font-size: 13px;
+    }
+
+    .auth-feature-list {
+        gap: 16px;
+    }
+
+}
+
+
+/* ========================================================
+   MOBILE
+   <= 768px
+   ======================================================== */
+
+@media (max-width: 768px) {
+
+    .auth-page {
+        min-height: 100vh;
+
+        display: block;
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+
+    /* Hide desktop brand panel */
+
+    .auth-brand-section {
+        display: none;
+    }
+
+
+    /* Full width login */
+
+    .auth-form-section {
+        width: 100%;
+        min-height: 100vh;
+
+        padding: 30px 22px;
+
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+
+        box-sizing: border-box;
+    }
+
+
+    .auth-form-container {
+        width: 100%;
+        max-width: 450px;
+
+        padding-top: 10px;
+    }
+
+
+    /* Show mobile brand */
+
+    .mobile-auth-brand {
+        display: flex;
+    }
+
+
+    .auth-heading {
+        margin-bottom: 28px;
+    }
+
+
+    .auth-heading h1 {
+        font-size: 30px;
+    }
+
+
+    .auth-heading p {
+        font-size: 13px;
+    }
+
+
+    .auth-form {
+        gap: 18px;
+    }
+
+}
+
+
+/* ========================================================
+   MOBILE SMALL
+   <= 480px
+   ======================================================== */
+
+@media (max-width: 480px) {
+
+    .auth-form-section {
+        padding: 24px 18px;
+    }
+
+
+    .auth-form-container {
+        max-width: 100%;
+    }
+
+
+    .mobile-auth-brand {
+        margin-bottom: 30px;
+    }
+
+
+    .mobile-auth-brand .auth-logo {
+        width: 38px;
+        height: 38px;
+
+        font-size: 19px;
+    }
+
+
+    .mobile-auth-brand strong {
+        font-size: 16px;
+    }
+
+
+    .auth-heading {
+        margin-bottom: 24px;
+    }
+
+
+    .auth-welcome {
+        font-size: 10px;
+    }
+
+
+    .auth-heading h1 {
+        font-size: 27px;
+
+        letter-spacing: -0.7px;
+    }
+
+
+    .auth-heading p {
+        font-size: 12px;
+    }
+
+
+    .form-group label {
+        font-size: 11px;
+    }
+
+
+    .input-wrapper input {
+        font-size: 13px;
+    }
+
+
+    .auth-submit-button {
+        width: 100%;
+    }
+
+
+    .google-button {
+        width: 100%;
+    }
+
+
+    .auth-bottom-text {
+        font-size: 12px;
+    }
+
+
+    .auth-terms {
+        font-size: 10px;
+        line-height: 1.6;
+    }
+
+}
+
+
+/* ========================================================
+   VERY SMALL PHONES
+   <= 360px
+   ======================================================== */
+
+@media (max-width: 360px) {
+
+    .auth-form-section {
+        padding: 20px 14px;
+    }
+
+
+    .auth-heading h1 {
+        font-size: 24px;
+    }
+
+
+    .auth-heading p {
+        font-size: 11px;
+    }
+
+
+    .auth-form {
+        gap: 15px;
+    }
+
+
+    .input-wrapper {
+        min-height: 46px;
+    }
+
+
+    .auth-submit-button {
+        min-height: 46px;
+
+        font-size: 13px;
+    }
+
+
+    .google-button {
+        min-height: 46px;
+
+        font-size: 12px;
+    }
+
+}
+
+
+/* ========================================================
+   LANDSCAPE MOBILE
+   ======================================================== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+
+    .auth-form-section {
+        min-height: 100vh;
+
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+
+    .mobile-auth-brand {
+        margin-bottom: 20px;
+    }
+
+
+    .auth-heading {
+        margin-bottom: 18px;
+    }
+
+
+    .auth-heading h1 {
+        font-size: 25px;
+    }
+
+
+    .auth-form {
+        gap: 14px;
+    }
+
+}

@@ -1,0 +1,292 @@
+/* ================================
+   AU COMMUNITY - OPPORTUNITIES
+================================ */
+
+.opportunities-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 28px;
+    background: #f8fafc;
+    color: #0f172a;
+    box-sizing: border-box;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+}
+
+.opps-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.opps-header h1 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.opps-header p {
+    margin: 6px 0 0;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.btn-add-opp {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    background: #0ea5e9;
+    color: white;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.btn-add-opp:hover {
+    background: #0284c7;
+    transform: translateY(-1px);
+}
+
+.opps-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.opp-stat-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.opp-stat-card .stat-title {
+    color: #64748b;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.opp-stat-card .stat-value {
+    color: #0f172a;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.opps-toolbar {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px 10px 0 0;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: none;
+}
+
+.opps-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 8px 12px;
+    border-radius: 6px;
+    width: 300px;
+}
+
+.opps-search input {
+    background: transparent;
+    border: none;
+    outline: none;
+    width: 100%;
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.opps-search input::placeholder {
+    color: #94a3b8;
+}
+
+.opps-filters select {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    background: #ffffff;
+    font-size: 14px;
+    color: #334155;
+    outline: none;
+    cursor: pointer;
+}
+
+.opps-table-container {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0 0 10px 10px;
+    overflow: hidden;
+}
+
+.opps-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.opps-table th {
+    background: #f8fafc;
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.opps-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.opps-table tr:hover {
+    background: #f8fafc;
+}
+
+.opp-title-cell h4 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.opp-title-cell p {
+    margin: 0;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.type-tag {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.type-job { background: #e0e7ff; color: #4338ca; }
+.type-internship { background: #fef08a; color: #854d0e; }
+.type-event { background: #fed7aa; color: #9a3412; }
+
+.status-active { color: #15803d; font-weight: 500; }
+.status-closed { color: #b91c1c; font-weight: 500; }
+
+.opp-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.opp-actions button {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: 0.2s;
+    color: #64748b;
+}
+
+.opp-actions .btn-del:hover {
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #ef4444;
+}
+
+/* Add Form Modal */
+.opp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    z-index: 1000;
+}
+
+.opp-form-card {
+    background: #ffffff;
+    border-radius: 12px;
+    width: 500px;
+    max-width: 100%;
+    padding: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.opp-form-card h2 {
+    margin: 0 0 20px;
+    font-size: 20px;
+    color: #0f172a;
+}
+
+.opp-form-group {
+    margin-bottom: 16px;
+}
+
+.opp-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #334155;
+}
+
+.opp-form-group input,
+.opp-form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.opp-form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.btn-cancel-opp {
+    padding: 8px 16px;
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #475569;
+}
+
+.btn-save-opp {
+    padding: 8px 16px;
+    background: #0ea5e9;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    color: white;
+}

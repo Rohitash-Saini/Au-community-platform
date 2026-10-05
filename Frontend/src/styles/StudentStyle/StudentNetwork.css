@@ -1,0 +1,1358 @@
+/* =========================================================
+   STUDENT NETWORK
+   AU Community - Navy / Orange / Lavender Theme
+========================================================= */
+
+:root {
+  --sn-navy: #1b1740;
+  --sn-navy-2: #2a2560;
+  --sn-orange: #ff9a1f;
+  --sn-orange-dark: #e07f00;
+  --sn-lavender: #b9b4ea;
+  --sn-bg: #f1f0f7;
+  --sn-card: #ffffff;
+  --sn-ink: #1d1a38;
+  --sn-muted: #6b6889;
+  --sn-line: #e4e2f0;
+  --sn-success: #22a06b;
+  --sn-danger: #d6334a;
+  --sn-shadow: 0 10px 30px rgba(27, 23, 64, 0.08);
+  --sn-shadow-hover: 0 18px 42px rgba(27, 23, 64, 0.14);
+}
+
+/* =========================================================
+   PAGE
+========================================================= */
+
+.student-network-page {
+  width: 100%;
+  min-height: 100%;
+  padding: 4px 0 40px;
+  color: var(--sn-ink);
+  font-family: "Inter", sans-serif;
+  box-sizing: border-box;
+}
+
+.student-network-page *,
+.student-network-page *::before,
+.student-network-page *::after {
+  box-sizing: border-box;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.student-network-hero {
+  position: relative;
+  width: 100%;
+  min-height: 280px;
+  overflow: hidden;
+  border-radius: 22px;
+  padding: 42px 46px;
+  margin-bottom: 22px;
+  background:
+    radial-gradient(circle at 85% 20%,
+      rgba(255, 154, 31, 0.22),
+      transparent 28%),
+    radial-gradient(circle at 70% 100%,
+      rgba(185, 180, 234, 0.18),
+      transparent 34%),
+    linear-gradient(135deg, var(--sn-navy), var(--sn-navy-2));
+  box-shadow: var(--sn-shadow);
+}
+
+.student-network-hero-content {
+  position: relative;
+  z-index: 3;
+  width: min(720px, 70%);
+}
+
+.student-network-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 154, 31, 0.3);
+  border-radius: 999px;
+  color: #ffd69a;
+  background: rgba(255, 154, 31, 0.1);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-network-eyebrow::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--sn-orange);
+  box-shadow: 0 0 0 5px rgba(255, 154, 31, 0.12);
+}
+
+.student-network-hero h1 {
+  margin: 0 0 10px;
+  color: #ffffff;
+  font-size: clamp(30px, 4vw, 46px);
+  line-height: 1.08;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+.student-network-hero p {
+  max-width: 650px;
+  margin: 0 0 22px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* =========================================================
+   SEARCH
+========================================================= */
+
+.student-network-search {
+  position: relative;
+  width: min(540px, 100%);
+}
+
+.student-network-search input {
+  width: 100%;
+  height: 48px;
+  padding: 0 18px 0 46px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 13px;
+  outline: none;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  font-family: inherit;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.student-network-search input::placeholder {
+  color: rgba(255, 255, 255, 0.52);
+}
+
+.student-network-search input:focus {
+  border-color: var(--sn-orange);
+  background: rgba(255, 255, 255, 0.13);
+  box-shadow: 0 0 0 3px rgba(255, 154, 31, 0.12);
+}
+
+.student-network-search::before {
+  content: "⌕";
+  position: absolute;
+  z-index: 2;
+  left: 17px;
+  top: 50%;
+  transform: translateY(-52%);
+  color: #ffffff;
+  font-size: 22px;
+  pointer-events: none;
+}
+
+/* =========================================================
+   HERO ART
+========================================================= */
+
+.student-network-hero-art {
+  position: absolute;
+  right: 60px;
+  top: 50%;
+  width: 230px;
+  height: 230px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.network-orbit {
+  position: absolute;
+  inset: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+}
+
+.network-orbit::before,
+.network-orbit::after {
+  content: "";
+  position: absolute;
+  inset: 30px;
+  border: 1px solid rgba(255, 154, 31, 0.2);
+  border-radius: 50%;
+}
+
+.network-orbit::after {
+  inset: 58px;
+  border-color: rgba(185, 180, 234, 0.25);
+}
+
+.network-center-icon {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 74px;
+  height: 74px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  color: var(--sn-navy);
+  background: var(--sn-orange);
+  box-shadow:
+    0 0 0 12px rgba(255, 154, 31, 0.08),
+    0 15px 30px rgba(0, 0, 0, 0.18);
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.network-floating-icon {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 50%;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  font-size: 14px;
+}
+
+.network-floating-icon:nth-child(2) {
+  top: 18px;
+  left: 42px;
+}
+
+.network-floating-icon:nth-child(3) {
+  top: 22px;
+  right: 30px;
+}
+
+.network-floating-icon:nth-child(4) {
+  right: 4px;
+  bottom: 52px;
+}
+
+.network-floating-icon:nth-child(5) {
+  left: 22px;
+  bottom: 25px;
+}
+
+/* =========================================================
+   STATS
+========================================================= */
+
+.student-network-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 22px;
+}
+
+.student-network-stat {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 88px;
+  padding: 18px;
+  border: 1px solid var(--sn-line);
+  border-radius: 17px;
+  background: var(--sn-card);
+  box-shadow: var(--sn-shadow);
+}
+
+.student-network-stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  color: var(--sn-orange-dark);
+  background: rgba(255, 154, 31, 0.12);
+  font-size: 19px;
+}
+
+.student-network-stat:nth-child(2) .student-network-stat-icon {
+  color: var(--sn-navy);
+  background: rgba(185, 180, 234, 0.28);
+}
+
+.student-network-stat:nth-child(3) .student-network-stat-icon {
+  color: #236a9d;
+  background: rgba(72, 150, 210, 0.12);
+}
+
+.student-network-stat:nth-child(4) .student-network-stat-icon {
+  color: var(--sn-success);
+  background: rgba(34, 160, 107, 0.12);
+}
+
+.student-network-stat-content {
+  min-width: 0;
+}
+
+.student-network-stat strong {
+  display: block;
+  margin-bottom: 3px;
+  color: var(--sn-ink);
+  font-size: 24px;
+  line-height: 1;
+  font-weight: 800;
+}
+
+.student-network-stat span {
+  color: var(--sn-muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   TOOLBAR
+========================================================= */
+
+.student-network-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 64px;
+  padding: 10px 14px;
+  margin-bottom: 22px;
+  border: 1px solid var(--sn-line);
+  border-radius: 17px;
+  background: var(--sn-card);
+  box-shadow: var(--sn-shadow);
+}
+
+.student-network-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.student-network-filter {
+  height: 38px;
+  padding: 0 15px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  outline: none;
+  color: var(--sn-muted);
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.student-network-filter:hover {
+  color: var(--sn-navy);
+  background: #f5f3fb;
+}
+
+.student-network-filter.active {
+  color: #ffffff;
+  background: var(--sn-navy);
+  box-shadow: 0 5px 12px rgba(27, 23, 64, 0.18);
+}
+
+.student-network-result-count {
+  flex-shrink: 0;
+  color: var(--sn-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* =========================================================
+   SECTION
+========================================================= */
+
+.student-network-section {
+  width: 100%;
+}
+
+.student-network-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.student-network-section-label {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--sn-navy);
+  font-size: 17px;
+  font-weight: 800;
+}
+
+.student-network-section-label::before {
+  content: "";
+  width: 5px;
+  height: 21px;
+  border-radius: 999px;
+  background: var(--sn-orange);
+}
+
+/* =========================================================
+   LOADING
+========================================================= */
+
+.student-network-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  border: 1px solid var(--sn-line);
+  border-radius: 18px;
+  background: var(--sn-card);
+}
+
+.student-network-loader {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #e9e7f2;
+  border-top-color: var(--sn-orange);
+  border-radius: 50%;
+  animation: studentNetworkSpin 0.8s linear infinite;
+}
+
+@keyframes studentNetworkSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   MEMBER GRID
+========================================================= */
+
+.student-network-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+/* =========================================================
+   MEMBER CARD
+========================================================= */
+
+.student-network-card {
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+  border: 1px solid var(--sn-line);
+  border-radius: 19px;
+  background: var(--sn-card);
+  box-shadow: var(--sn-shadow);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease;
+}
+
+.student-network-card:hover {
+  transform: translateY(-5px);
+  border-color: #d5d1e8;
+  box-shadow: var(--sn-shadow-hover);
+}
+
+.student-network-card-cover {
+  position: relative;
+  height: 82px;
+  background:
+    radial-gradient(circle at 85% 20%,
+      rgba(255, 154, 31, 0.28),
+      transparent 32%),
+    linear-gradient(135deg, var(--sn-navy), var(--sn-navy-2));
+}
+
+.student-network-card-cover::after {
+  content: "";
+  position: absolute;
+  right: -30px;
+  bottom: -65px;
+  width: 150px;
+  height: 150px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 50%;
+}
+
+.network-role-badge {
+  position: absolute;
+  top: 13px;
+  left: 14px;
+  z-index: 2;
+  padding: 6px 10px;
+  border-radius: 999px;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.11);
+  backdrop-filter: blur(7px);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.student-network-card-body {
+  position: relative;
+  padding: 0 18px 18px;
+}
+
+/* =========================================================
+   AVATAR
+========================================================= */
+
+.student-network-avatar-wrap {
+  position: relative;
+  width: fit-content;
+  margin-top: -30px;
+  margin-bottom: 11px;
+}
+
+.student-network-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border: 4px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--sn-navy-2), #47418a);
+  box-shadow: 0 6px 16px rgba(27, 23, 64, 0.2);
+  font-size: 21px;
+  font-weight: 800;
+  overflow: hidden;
+}
+
+.student-network-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.network-connected-dot {
+  position: absolute;
+  right: 1px;
+  bottom: 2px;
+  width: 14px;
+  height: 14px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  background: var(--sn-success);
+}
+
+.student-network-person {
+  margin-bottom: 2px;
+  color: var(--sn-ink);
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.network-designation {
+  margin-bottom: 5px;
+  color: var(--sn-orange-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.network-department,
+.network-batch {
+  margin-bottom: 4px;
+  color: var(--sn-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+/* =========================================================
+   BIO
+========================================================= */
+
+.student-network-bio {
+  display: -webkit-box;
+  min-height: 38px;
+  margin: 12px 0;
+  overflow: hidden;
+  color: var(--sn-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.student-network-location {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--sn-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.student-network-location svg {
+  color: var(--sn-orange-dark);
+}
+
+/* =========================================================
+   SKILLS
+========================================================= */
+
+.student-network-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 15px;
+}
+
+.student-network-skills span {
+  padding: 5px 8px;
+  border-radius: 7px;
+  color: var(--sn-navy);
+  background: #f0eef8;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.network-more-skills {
+  color: var(--sn-orange-dark) !important;
+  background: rgba(255, 154, 31, 0.1) !important;
+}
+
+/* =========================================================
+   ACTIONS
+========================================================= */
+
+.student-network-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.student-network-actions button {
+  min-width: 0;
+  height: 38px;
+  border-radius: 9px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.network-view-btn {
+  border: 1px solid var(--sn-line);
+  color: var(--sn-navy);
+  background: #ffffff;
+}
+
+.network-view-btn:hover {
+  border-color: var(--sn-navy);
+  background: #f7f6fb;
+}
+
+.network-connect-btn {
+  border: 1px solid var(--sn-orange);
+  color: #ffffff;
+  background: var(--sn-orange);
+}
+
+.network-connect-btn:hover {
+  border-color: var(--sn-orange-dark);
+  background: var(--sn-orange-dark);
+  transform: translateY(-1px);
+}
+
+.network-connected-btn {
+  border: 1px solid rgba(34, 160, 107, 0.25);
+  color: var(--sn-success);
+  background: rgba(34, 160, 107, 0.08);
+}
+
+.network-connected-btn:hover {
+  background: rgba(34, 160, 107, 0.13);
+}
+
+.network-button-loader {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  vertical-align: middle;
+  animation: studentNetworkSpin 0.7s linear infinite;
+}
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+.student-network-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  min-height: 270px;
+  padding: 35px;
+  border: 1px dashed #d8d5e6;
+  border-radius: 18px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.student-network-empty-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  margin-bottom: 14px;
+  border-radius: 50%;
+  color: var(--sn-orange-dark);
+  background: rgba(255, 154, 31, 0.12);
+  font-size: 25px;
+}
+
+.student-network-empty h3 {
+  margin: 0 0 6px;
+  color: var(--sn-navy);
+  font-size: 18px;
+}
+
+.student-network-empty p {
+  max-width: 420px;
+  margin: 0;
+  color: var(--sn-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+/* =========================================================
+   CTA
+========================================================= */
+
+.student-network-cta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  overflow: hidden;
+  margin-top: 26px;
+  padding: 25px 30px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at 85% 50%,
+      rgba(255, 154, 31, 0.2),
+      transparent 30%),
+    var(--sn-navy);
+  box-shadow: var(--sn-shadow);
+}
+
+.student-network-cta::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -60px;
+  width: 180px;
+  height: 180px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+}
+
+.student-network-cta-content {
+  position: relative;
+  z-index: 2;
+}
+
+.student-network-cta-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #ffd18d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.student-network-cta h3 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 20px;
+}
+
+.student-network-cta p {
+  margin: 5px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 12px;
+}
+
+.student-network-cta-icon {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  color: var(--sn-navy);
+  background: var(--sn-orange);
+  font-size: 21px;
+}
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.student-network-modal-overlay {
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(15, 12, 38, 0.68);
+  backdrop-filter: blur(7px);
+}
+
+.student-network-modal {
+  position: relative;
+  width: min(620px, 100%);
+  max-height: min(720px, 90vh);
+  overflow-y: auto;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: 0 30px 80px rgba(15, 12, 38, 0.3);
+  animation: studentNetworkModalIn 0.2s ease;
+}
+
+@keyframes studentNetworkModalIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.student-network-modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--sn-line);
+  background: linear-gradient(180deg, #ffffff, #fbfaff);
+}
+
+.network-modal-profile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.student-network-modal-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 62px;
+  height: 62px;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  background: linear-gradient(135deg, var(--sn-navy), var(--sn-navy-2));
+  box-shadow: 0 5px 15px rgba(27, 23, 64, 0.16);
+  font-size: 20px;
+  font-weight: 800;
+  overflow: hidden;
+}
+
+.student-network-modal-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.network-modal-profile h2 {
+  margin: 0 0 4px;
+  color: var(--sn-ink);
+  font-size: 20px;
+}
+
+.network-modal-profile p {
+  margin: 0;
+  color: var(--sn-orange-dark);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.network-modal-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--sn-line);
+  border-radius: 10px;
+  color: var(--sn-muted);
+  background: #ffffff;
+  cursor: pointer;
+  font-size: 20px;
+  transition: 0.2s ease;
+}
+
+.network-modal-close:hover {
+  color: var(--sn-danger);
+  border-color: rgba(214, 51, 74, 0.2);
+  background: rgba(214, 51, 74, 0.05);
+}
+
+/* =========================================================
+   MODAL BODY
+========================================================= */
+
+.network-modal-info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 22px 24px 0;
+}
+
+.network-modal-info-grid>div {
+  padding: 13px;
+  border: 1px solid var(--sn-line);
+  border-radius: 11px;
+  background: #faf9fd;
+}
+
+.network-modal-info-grid strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--sn-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.network-modal-info-grid span {
+  color: var(--sn-ink);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.network-modal-about,
+.network-modal-skills {
+  padding: 18px 24px 0;
+}
+
+.network-modal-about h4,
+.network-modal-skills h4 {
+  margin: 0 0 8px;
+  color: var(--sn-navy);
+  font-size: 13px;
+}
+
+.network-modal-about p {
+  margin: 0;
+  color: var(--sn-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.network-modal-skills {
+  padding-bottom: 20px;
+}
+
+.network-modal-skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.network-modal-skills-list span {
+  padding: 6px 9px;
+  border-radius: 7px;
+  color: var(--sn-navy);
+  background: #f0eef8;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+/* =========================================================
+   MODAL FOOT
+========================================================= */
+
+.student-network-modal-foot {
+  display: flex;
+  justify-content: flex-end;
+  gap: 9px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--sn-line);
+  background: #faf9fd;
+}
+
+.student-network-modal-foot button {
+  min-width: 110px;
+  height: 40px;
+  padding: 0 15px;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.network-modal-connected {
+  border: 1px solid rgba(34, 160, 107, 0.25);
+  color: var(--sn-success);
+  background: rgba(34, 160, 107, 0.08);
+}
+
+.network-modal-connect {
+  border: 1px solid var(--sn-orange);
+  color: #ffffff;
+  background: var(--sn-orange);
+}
+
+.network-modal-connect:hover {
+  border-color: var(--sn-orange-dark);
+  background: var(--sn-orange-dark);
+}
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.student-network-toast {
+  position: fixed;
+  z-index: 2000;
+  right: 25px;
+  bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 13px 17px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: #ffffff;
+  background: var(--sn-navy);
+  box-shadow: 0 15px 40px rgba(27, 23, 64, 0.25);
+  font-size: 12px;
+  font-weight: 650;
+  animation: studentNetworkToastIn 0.25s ease;
+}
+
+.student-network-toast::before {
+  content: "✓";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  color: var(--sn-navy);
+  background: var(--sn-orange);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+@keyframes studentNetworkToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 1100px
+========================================================= */
+
+@media (max-width: 1100px) {
+  .student-network-hero {
+    padding: 36px;
+  }
+
+  .student-network-hero-content {
+    width: 75%;
+  }
+
+  .student-network-hero-art {
+    right: 25px;
+    opacity: 0.7;
+    transform: translateY(-50%) scale(0.85);
+  }
+
+  .student-network-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .student-network-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 820px
+========================================================= */
+
+@media (max-width: 820px) {
+  .student-network-page {
+    padding-bottom: 30px;
+  }
+
+  .student-network-hero {
+    min-height: 300px;
+    padding: 32px 28px;
+  }
+
+  .student-network-hero-content {
+    width: 100%;
+  }
+
+  .student-network-hero-art {
+    right: -45px;
+    bottom: -65px;
+    top: auto;
+    transform: scale(0.65);
+    transform-origin: bottom right;
+    opacity: 0.35;
+  }
+
+  .student-network-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 13px;
+  }
+
+  .student-network-result-count {
+    padding-left: 3px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 620px
+========================================================= */
+
+@media (max-width: 620px) {
+  .student-network-hero {
+    min-height: auto;
+    padding: 28px 22px 30px;
+    border-radius: 18px;
+  }
+
+  .student-network-hero h1 {
+    font-size: 31px;
+  }
+
+  .student-network-hero p {
+    font-size: 13px;
+  }
+
+  .student-network-search input {
+    height: 45px;
+  }
+
+  .student-network-hero-art {
+    display: none;
+  }
+
+  .student-network-stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .student-network-stat {
+    min-height: 76px;
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .student-network-stat-icon {
+    width: 39px;
+    height: 39px;
+    border-radius: 11px;
+    font-size: 15px;
+  }
+
+  .student-network-stat strong {
+    font-size: 19px;
+  }
+
+  .student-network-stat span {
+    font-size: 10px;
+  }
+
+  .student-network-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-network-filter-group {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  .student-network-filter-group::-webkit-scrollbar {
+    display: none;
+  }
+
+  .student-network-filter {
+    flex: 0 0 auto;
+  }
+
+  .student-network-section-header {
+    margin-bottom: 12px;
+  }
+
+  .student-network-cta {
+    align-items: flex-start;
+    padding: 21px;
+  }
+
+  .student-network-cta h3 {
+    font-size: 17px;
+  }
+
+  .student-network-cta-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .student-network-modal-overlay {
+    padding: 12px;
+  }
+
+  .student-network-modal {
+    border-radius: 17px;
+  }
+
+  .student-network-modal-head {
+    padding: 18px;
+  }
+
+  .network-modal-info-grid {
+    grid-template-columns: 1fr;
+    padding: 18px 18px 0;
+  }
+
+  .network-modal-about,
+  .network-modal-skills {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .student-network-modal-foot {
+    padding: 14px 18px;
+  }
+}
+
+/* =========================================================
+   RESPONSIVE - 420px
+========================================================= */
+
+@media (max-width: 420px) {
+  .student-network-hero {
+    padding: 24px 18px 25px;
+  }
+
+  .student-network-eyebrow {
+    font-size: 9px;
+  }
+
+  .student-network-hero h1 {
+    font-size: 27px;
+  }
+
+  .student-network-stats {
+    gap: 8px;
+  }
+
+  .student-network-stat {
+    padding: 10px;
+  }
+
+  .student-network-stat-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 13px;
+  }
+
+  .student-network-stat strong {
+    font-size: 17px;
+  }
+
+  .student-network-stat span {
+    font-size: 9px;
+  }
+
+  .student-network-card-body {
+    padding-left: 15px;
+    padding-right: 15px;
+  }
+
+  .student-network-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .student-network-modal-head {
+    align-items: flex-start;
+  }
+
+  .network-modal-profile h2 {
+    font-size: 17px;
+  }
+
+  .student-network-modal-avatar {
+    width: 53px;
+    height: 53px;
+  }
+
+  .student-network-modal-foot {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .student-network-modal-foot button {
+    width: 100%;
+  }
+
+  .student-network-toast {
+    right: 15px;
+    bottom: 15px;
+  }
+}
