@@ -56,8 +56,9 @@ const fallbackNotifications = [
 const normalizeNotification = (item, index) => {
   return {
     id: item?._id || item?.id || `notification-${index}`,
+    relatedId: item?.relatedId || item?.connectionId || null,
     type: item?.type || item?.category || "general",
-    title: item?.title || item?.heading || "New notification",
+    title: item?.title || (item?.type === "connection_request" ? "Connection Request" : "New notification"),
     message:
       item?.message ||
       item?.description ||
@@ -69,26 +70,31 @@ const normalizeNotification = (item, index) => {
       item?.date ||
       "Recently",
     read: Boolean(item?.read || item?.isRead),
-    avatar: item?.avatar || item?.user?.avatar || "",
+    avatar: item?.avatar || item?.sender?.profilePicture || "",
     userName:
       item?.userName ||
       item?.user?.name ||
       item?.sender?.name ||
       "",
+    actionDone: null,
   };
 };
 
 const getNotificationIcon = (type) => {
   switch (type) {
     case "connection":
+    case "connection_request":
+    case "connection_accepted":
       return "fas fa-user-plus";
     case "event":
       return "fas fa-calendar-check";
     case "opportunity":
       return "fas fa-briefcase";
     case "like":
+    case "post_like":
       return "fas fa-heart";
     case "comment":
+    case "post_comment":
       return "fas fa-comment";
     case "message":
       return "fas fa-envelope";
@@ -104,14 +110,18 @@ const getNotificationIcon = (type) => {
 const getNotificationClass = (type) => {
   switch (type) {
     case "connection":
+    case "connection_request":
+    case "connection_accepted":
       return "student-notification-type-connection";
     case "event":
       return "student-notification-type-event";
     case "opportunity":
       return "student-notification-type-opportunity";
     case "like":
+    case "post_like":
       return "student-notification-type-like";
     case "comment":
+    case "post_comment":
       return "student-notification-type-comment";
     case "message":
       return "student-notification-type-message";
@@ -157,9 +167,7 @@ const formatTime = (value) => {
 };
 
 const Notification = () => {
-  const [notifications, setNotifications] = useState(
-    fallbackNotifications
-  );
+  const [notifications, setNotifications] = useState([]);
   const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [processingId, setProcessingId] = useState(null);
@@ -183,26 +191,124 @@ const Notification = () => {
     setLoading(true);
 
     try {
-      const response = await API.get("/notifications");
+      const [notifRes, reqRes, annRes] = await Promise.allSettled([
+        API.get("/notifications"),
+        API.get("/connections/requests"),
+        API.get("/announcements"),
+      ]);
 
-      const data = Array.isArray(response?.data)
-        ? response.data
-        : Array.isArray(response?.data?.notifications)
-          ? response.data.notifications
-          : Array.isArray(response?.data?.data)
-            ? response.data.data
-            : [];
+      const notifData =
+        notifRes.status === "fulfilled"
+          ? Array.isArray(notifRes.value?.data)
+            ? notifRes.value.data
+            : notifRes.value?.data?.notifications || []
+          : [];
 
-      if (data.length > 0) {
-        setNotifications(data.map(normalizeNotification));
-      } else {
-        setNotifications(fallbackNotifications);
-      }
+      const pendingRequests =
+        reqRes.status === "fulfilled"
+          ? reqRes.value?.data?.requests || []
+          : [];
+
+      const announcementData =
+        annRes.status === "fulfilled"
+          ? annRes.value?.data?.announcements || annRes.value?.data || []
+          : [];
+
+      const connectionNotifications = pendingRequests.map((req, idx) => ({
+        id: `conn-req-${req.connectionId || idx}`,
+        relatedId: req.connectionId,
+        type: "connection_request",
+        title: "Connection Request",
+        message: `${req.sender?.name || "A community member"} sent you a connection request.`,
+        time: req.sentAt || new Date().toISOString(),
+        read: false,
+        userName: req.sender?.name || "Community Member",
+        avatar: req.sender?.profilePicture || "",
+        actionDone: null,
+      }));
+
+      const announcementNotifications = Array.isArray(announcementData)
+        ? announcementData.map((ann, idx) => ({
+            id: `announcement-${ann._id || idx}`,
+            type: "announcement",
+            title: ann.title || "Announcement",
+            message: ann.content || ann.title || "New announcement published.",
+            time: ann.createdAt || new Date().toISOString(),
+            read: false,
+            userName: "AU Admin / Faculty",
+            avatar: "",
+            actionDone: null,
+          }))
+        : [];
+
+      const existingRelatedIds = new Set(
+        notifData
+          .filter((n) => n.relatedId)
+          .map((n) => String(n.relatedId))
+      );
+
+      const uniquePendingConns = connectionNotifications.filter(
+        (c) => !existingRelatedIds.has(String(c.relatedId))
+      );
+
+      const combined = [
+        ...uniquePendingConns,
+        ...announcementNotifications,
+        ...notifData.map(normalizeNotification),
+      ];
+
+      setNotifications(combined);
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
-      setNotifications(fallbackNotifications);
+      setNotifications([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAcceptConnection = async (notification, event) => {
+    event?.stopPropagation();
+    const connId = notification.relatedId || notification.connectionId || notification.id;
+    setProcessingId(notification.id);
+
+    try {
+      await API.put(`/connections/${connId}/accept`);
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item.id === notification.id
+            ? { ...item, actionDone: "accepted", message: "Connection request accepted ✔️", read: true }
+            : item
+        )
+      );
+      setToast("Connection request accepted!");
+    } catch (error) {
+      console.error("Failed to accept connection:", error);
+      setToast(error.response?.data?.message || "Failed to accept connection");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleRejectConnection = async (notification, event) => {
+    event?.stopPropagation();
+    const connId = notification.relatedId || notification.connectionId || notification.id;
+    setProcessingId(notification.id);
+
+    try {
+      await API.put(`/connections/${connId}/reject`);
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item.id === notification.id
+            ? { ...item, actionDone: "rejected", message: "Connection request declined ✖️", read: true }
+            : item
+        )
+      );
+      setToast("Connection request declined.");
+    } catch (error) {
+      console.error("Failed to reject connection:", error);
+      setToast(error.response?.data?.message || "Failed to decline connection");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -558,6 +664,61 @@ const Notification = () => {
                     <div className="student-notification-user">
                       <i className="fas fa-user" />
                       {notification.userName}
+                    </div>
+                  )}
+
+                  {(notification.type === "connection_request" || notification.type === "connection") && (
+                    <div className="connection-request-actions" style={{ marginTop: "10px", display: "flex", gap: "10px", alignItems: "center" }}>
+                      {notification.actionDone === "accepted" ? (
+                        <span style={{ color: "#10b981", fontWeight: "600", fontSize: "0.9rem" }}>
+                          <i className="fas fa-check-circle" style={{ marginRight: "4px" }}></i> Request Accepted
+                        </span>
+                      ) : notification.actionDone === "rejected" ? (
+                        <span style={{ color: "#ef4444", fontWeight: "600", fontSize: "0.9rem" }}>
+                          <i className="fas fa-times-circle" style={{ marginRight: "4px" }}></i> Request Declined
+                        </span>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            style={{
+                              backgroundColor: "#10b981",
+                              color: "#ffffff",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 14px",
+                              cursor: "pointer",
+                              fontWeight: "600",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px"
+                            }}
+                            disabled={processingId === notification.id}
+                            onClick={(e) => handleAcceptConnection(notification, e)}
+                          >
+                            <i className="fas fa-check"></i> Accept
+                          </button>
+                          <button
+                            type="button"
+                            style={{
+                              backgroundColor: "#ef4444",
+                              color: "#ffffff",
+                              border: "none",
+                              borderRadius: "6px",
+                              padding: "6px 14px",
+                              cursor: "pointer",
+                              fontWeight: "600",
+                              display: "flex",
+                              alignItems: "center",
+                              gap: "6px"
+                            }}
+                            disabled={processingId === notification.id}
+                            onClick={(e) => handleRejectConnection(notification, e)}
+                          >
+                            <i className="fas fa-times"></i> Reject
+                          </button>
+                        </>
+                      )}
                     </div>
                   )}
 

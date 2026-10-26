@@ -7,6 +7,8 @@ import TeacherNetwork from "../pages/Teacher/Network";
 import TeacherNotifications from "../pages/Teacher/Notifications";
 import TeacherProfile from "../pages/Teacher/TeacherProfile";
 import TeacherMessages from "../pages/Teacher/Messages";
+import ExpandableText from "../common/ExpandableText";
+import UserProfileModal from "../common/UserProfileModal";
 import "../../styles/TeacherStyle/TeacherDashboard.css";
 
 const NAV_ITEMS = [
@@ -49,6 +51,7 @@ const TeacherDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [commentOpenId, setCommentOpenId] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [toast, setToast] = useState("");
 
   /* ---------- helpers ---------- */
@@ -246,7 +249,7 @@ const TeacherDashboard = () => {
           >
             <span className="td-brand-badge">AU</span>
             <span className="td-brand-text">
-              <strong>FOUNDATION</strong>
+              <strong>Community</strong>
               <span>Faculty Dashboard</span>
             </span>
           </button>
@@ -396,13 +399,20 @@ const TeacherDashboard = () => {
                       <header className="td-post-head">
                         <span
                           className={`td-avatar td-avatar-md ${isTeacher ? "is-teacher" : "is-student"}`}
+                          style={{ cursor: post.author ? "pointer" : "default" }}
+                          onClick={() => post.author && setSelectedAuthor(post.author)}
                         >
                           {getInitials(post.author?.name) || "U"}
                         </span>
 
                         <div className="td-post-meta">
                           <div className="td-post-name">
-                            <strong>{post.author?.name || "AU Community Member"}</strong>
+                            <strong
+                              style={{ cursor: post.author ? "pointer" : "default" }}
+                              onClick={() => post.author && setSelectedAuthor(post.author)}
+                            >
+                              {post.author?.name || "AU Community Member"}
+                            </strong>
                             {isTeacher && <span className="td-tag">Faculty</span>}
                             {post.category && post.category !== "General" && (
                               <span className="td-tag td-tag-soft">{post.category}</span>
@@ -421,7 +431,7 @@ const TeacherDashboard = () => {
                       </header>
 
                       <div className="td-post-body">
-                        <p>{post.content}</p>
+                        <ExpandableText text={post.content} />
                         {post.image && (
                           <div className="td-post-media">
                             {post.image.startsWith("data:video") ||
@@ -646,6 +656,14 @@ const TeacherDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {selectedAuthor && (
+        <UserProfileModal
+          user={selectedAuthor}
+          userId={selectedAuthor._id || selectedAuthor.id}
+          onClose={() => setSelectedAuthor(null)}
+        />
       )}
 
       {toast && <div className="td-toast" role="status">{toast}</div>}

@@ -4,10 +4,10 @@ const Post = require("../models/post");
 const createComment = async (req, res) => {
   try {
     const { postId } = req.params;
-    const { content } = req.body;
+    const content = req.body.content || req.body.text;
 
     // Check content
-    if (!content || content.trim().length === 0) {
+    if (!content || typeof content !== "string" || content.trim().length === 0) {
       return res.status(400).json({
         success: false,
         message: "Comment content is required",

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../../../api';
+import ExpandableText from '../../common/ExpandableText';
 import '../../../styles/AdminStyle/AdminEvents.css';
 
 function AdminEvents() {
@@ -215,11 +216,11 @@ function AdminEvents() {
                     style={{ width: '100%', padding: '8px', border: '1px solid #cbd5e1', borderRadius: '6px', background: '#f8fafc' }} 
                   />
                   {formData.image && (
-                    <div style={{ marginTop: '10px', position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0', maxWidth: '100%' }}>
+                    <div style={{ marginTop: '10px', position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #e2e8f0', maxWidth: '100%', background: '#0f172a', display: 'flex', justifyContent: 'center' }}>
                       {isVideoFile(formData.image) ? (
-                        <video controls src={formData.image} style={{ width: '100%', maxHeight: '180px' }} />
+                        <video controls src={formData.image} style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
                       ) : (
-                        <img src={formData.image} alt="Preview" style={{ width: '100%', maxHeight: '180px', objectFit: 'cover' }} />
+                        <img src={formData.image} alt="Preview" style={{ width: '100%', maxHeight: '200px', objectFit: 'contain' }} />
                       )}
                       <button 
                         type="button" 
@@ -261,11 +262,11 @@ function AdminEvents() {
           filteredEvents.map(evt => (
             <div className="evt-card" key={evt._id}>
               {evt.image && (
-                <div style={{ width: '100%', maxHeight: '180px', borderRadius: '8px', overflow: 'hidden', marginBottom: '14px' }}>
+                <div style={{ width: '100%', maxHeight: '240px', borderRadius: '8px', overflow: 'hidden', marginBottom: '14px', background: '#0f172a', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   {isVideoFile(evt.image) ? (
-                    <video controls src={evt.image} style={{ width: '100%', maxHeight: '180px' }} />
+                    <video controls src={evt.image} style={{ width: '100%', maxHeight: '240px', objectFit: 'contain' }} />
                   ) : (
-                    <img src={evt.image} alt={evt.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                    <img src={evt.image} alt={evt.title} style={{ width: '100%', maxHeight: '240px', objectFit: 'contain' }} />
                   )}
                 </div>
               )}
@@ -279,8 +280,8 @@ function AdminEvents() {
                 </div>
               </div>
               
-              <div className="evt-content">
-                {evt.description || "No description provided."}
+              <div className="evt-content" style={{ display: 'block', overflow: 'visible' }}>
+                <ExpandableText text={evt.description || "No description provided."} linesLimit={3} charLimit={160} />
               </div>
 
               <div style={{ fontSize: '12px', color: '#64748b', display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '15px' }}>

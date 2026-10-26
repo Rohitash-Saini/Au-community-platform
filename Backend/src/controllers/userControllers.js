@@ -185,7 +185,10 @@ const discoverUsers = async (req, res) => {
       "admin",
     ];
 
-    const filter = {};
+    const filter = {
+      _id: { $ne: req.user.userId },
+      role: { $ne: "admin" },
+    };
 
     // Search by name or email
     if (query && query.trim() !== "") {

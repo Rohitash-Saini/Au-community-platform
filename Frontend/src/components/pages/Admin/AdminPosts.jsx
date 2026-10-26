@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../../../api';
+import ExpandableText from '../../common/ExpandableText';
 import '../../../styles/AdminStyle/AdminPosts.css';
 
 function AdminPosts() {
@@ -259,14 +260,16 @@ function AdminPosts() {
                     </div>
                   </div>
 
-                  <div className="post-text">{post.content || "No content"}</div>
+                  <div className="post-text">
+                    <ExpandableText text={post.content || "No content"} />
+                  </div>
 
                   {post.image && (
-                    <div style={{ margin: '8px 0', maxWidth: '300px', borderRadius: '8px', overflow: 'hidden' }}>
+                    <div style={{ margin: '8px 0', maxWidth: '100%', borderRadius: '8px', overflow: 'hidden', background: '#0b0f19', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                       {isVideoFile(post.image) ? (
-                        <video controls src={post.image} style={{ width: '100%', borderRadius: '8px', maxHeight: '200px' }} />
+                        <video controls src={post.image} style={{ width: '100%', borderRadius: '8px', maxHeight: '450px', objectFit: 'contain' }} />
                       ) : (
-                        <img src={post.image} alt="Attachment" style={{ width: '100%', display: 'block', maxHeight: '200px', objectFit: 'cover' }} />
+                        <img src={post.image} alt="Attachment" style={{ width: '100%', display: 'block', maxHeight: '450px', objectFit: 'contain' }} />
                       )}
                     </div>
                   )}

@@ -7,6 +7,8 @@ import NetworkPage from "../pages/Student/Network";
 import NotificationsPage from "../pages/Student/Notifications";
 import StudentProfile from "../pages/Student/StudentProfile";
 import StudentMessages from "../pages/Student/Messages";
+import ExpandableText from "../common/ExpandableText";
+import UserProfileModal from "../common/UserProfileModal";
 import "../../styles/StudentStyle/StudentDashboard.css";
 
 const NAV_ITEMS = [
@@ -49,6 +51,7 @@ const StudentDashboard = () => {
   const [notifications, setNotifications] = useState([]);
   const [commentOpenId, setCommentOpenId] = useState(null);
   const [commentText, setCommentText] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState(null);
   const [toast, setToast] = useState("");
 
   /* ---------- helpers ---------- */
@@ -244,7 +247,7 @@ const StudentDashboard = () => {
           >
             <span className="sd-brand-badge">AU</span>
             <span className="sd-brand-text">
-              <strong>FOUNDATION</strong>
+              <strong>Community</strong>
               <span>Student Dashboard</span>
             </span>
           </button>
@@ -409,13 +412,20 @@ const StudentDashboard = () => {
                       <header className="sd-post-head">
                         <span
                           className={`sd-avatar sd-avatar-md ${isTeacher ? "is-teacher" : "is-student"}`}
+                          style={{ cursor: post.author ? "pointer" : "default" }}
+                          onClick={() => post.author && setSelectedAuthor(post.author)}
                         >
                           {getInitials(post.author?.name) || "U"}
                         </span>
 
                         <div className="sd-post-meta">
                           <div className="sd-post-name">
-                            <strong>{post.author?.name || "AU Community Member"}</strong>
+                            <strong
+                              style={{ cursor: post.author ? "pointer" : "default" }}
+                              onClick={() => post.author && setSelectedAuthor(post.author)}
+                            >
+                              {post.author?.name || "AU Community Member"}
+                            </strong>
                             {isTeacher && <span className="sd-tag">Faculty</span>}
                             {post.category && post.category !== "General" && (
                               <span className="sd-tag sd-tag-soft">{post.category}</span>
@@ -434,7 +444,7 @@ const StudentDashboard = () => {
                       </header>
 
                       <div className="sd-post-body">
-                        <p>{post.content}</p>
+                        <ExpandableText text={post.content} />
                         {post.image && (
                           <div className="sd-post-media">
                             {post.image.startsWith("data:video") ||
@@ -660,6 +670,14 @@ const StudentDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {selectedAuthor && (
+        <UserProfileModal
+          user={selectedAuthor}
+          userId={selectedAuthor._id || selectedAuthor.id}
+          onClose={() => setSelectedAuthor(null)}
+        />
       )}
 
       {toast && <div className="sd-toast" role="status">{toast}</div>}

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import API from "../../../api";
+import ExpandableText from "../../common/ExpandableText";
 import "../../../styles/TeacherStyle/TeacherEvents.css";
 
 
@@ -71,6 +72,12 @@ const normalizeEvent = (item, index) => {
 
     featured:
       Boolean(item?.featured),
+
+    image:
+      item?.image ||
+      item?.coverImage ||
+      item?.banner ||
+      "",
   };
 };
 
@@ -674,17 +681,28 @@ const TeacherEvents = () => {
 
                     </div>
 
+                    {event.image && (
+                      <div style={{ width: '100%', maxHeight: '220px', borderRadius: '10px', overflow: 'hidden', margin: '12px 0', backgroundColor: '#0f172a', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        {event.image.startsWith("data:video") || event.image.endsWith(".mp4") ? (
+                          <video controls src={event.image} style={{ width: '100%', maxHeight: '220px', objectFit: 'contain' }} />
+                        ) : (
+                          <img src={event.image} alt={event.title} style={{ width: '100%', maxHeight: '220px', objectFit: 'contain' }} />
+                        )}
+                      </div>
+                    )}
 
                     {/* Event Icon */}
 
-                    <div className="event-icon">
-                      <i
-                        className={
-                          event.icon ||
-                          "fa-solid fa-calendar-days"
-                        }
-                      />
-                    </div>
+                    {!event.image && (
+                      <div className="event-icon">
+                        <i
+                          className={
+                            event.icon ||
+                            "fa-solid fa-calendar-days"
+                          }
+                        />
+                      </div>
+                    )}
 
 
                     {/* Content */}
@@ -697,9 +715,9 @@ const TeacherEvents = () => {
                       {event.organizer}
                     </span>
 
-                    <p className="event-description">
-                      {event.description}
-                    </p>
+                    <div className="event-description" style={{ margin: "8px 0" }}>
+                      <ExpandableText text={event.description} linesLimit={3} charLimit={160} />
+                    </div>
 
 
                     {/* Event Details */}

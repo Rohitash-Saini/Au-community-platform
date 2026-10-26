@@ -13,6 +13,7 @@ router.get("/search/skills",authMiddleware,searchUsersBySkill);
 router.get("/search/batch",authMiddleware,searchUsersByBatch);
 router.get("/filter/role",authMiddleware,filterUsersByRole);
 router.get("/discover",authMiddleware,discoverUsers);
+router.get("/", authMiddleware, discoverUsers);
 router.get("/:id", authMiddleware, getUserProfile);
 
 

@@ -41,11 +41,12 @@ const register = async (req, res) => {
     console.log("🔥 OTP:", verificationOTP);
     console.log("🔥 OTP EXPIRY:", verificationOTPExpire);
 
-    await sendEmail({
-      email: user.email,
-      subject: "Verify Your Email - Au-social",
-      message: `
-Your emial is verfiey for au social:
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Verify Your Email - Au-social",
+        message: `
+Your email is verified for au social:
 
 ${verificationOTP}
 
@@ -53,7 +54,10 @@ This OTP will expire in 10 minutes.
 
 If you did not create this account, please ignore this email.
 `,
-    });
+      });
+    } catch (emailError) {
+      console.error("⚠️ Email sending failed:", emailError.message);
+    }
 
     res.status(201).json({
       success: true,
@@ -207,11 +211,15 @@ ${resetUrl}
 This link expires in 10 minutes.
 `;
 
-    await sendEmail({
-      email: user.email,
-      subject: "Password Reset",
-      message,
-    });
+    try {
+      await sendEmail({
+        email: user.email,
+        subject: "Password Reset",
+        message,
+      });
+    } catch (emailError) {
+      console.error("⚠️ Email sending failed:", emailError.message);
+    }
 
     res.status(200).json({
       success: true,

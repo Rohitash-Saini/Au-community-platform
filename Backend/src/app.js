@@ -19,14 +19,38 @@ const reportRoutes = require("./routes/reportRoutes");
 const opportunityRoutes = require("./routes/opportunityRoutes");
 const announcementRoutes = require("./routes/announcementRoutes");
 const eventRoutes = require("./routes/eventRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 
 const app = express();
 
-app.use(express.json({ limit: "10kb" }));
+const allowedOrigins = [
+  process.env.CLIENT_URL,
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+].filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (like mobile apps, curl, postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin) || /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS policy violation"), false);
+    },
+    credentials: true,
+  })
+);
+
+app.use(express.json({ limit: "50mb" }));
 app.use(
   express.urlencoded({
     extended: true,
-    limit: "10kb",
+    limit: "50mb",
   })
 );
 
@@ -35,13 +59,6 @@ app.use(rateLimitMiddleware);
 app.use(
   helmet({
     strictTransportSecurity: false,
-  })
-);
-
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-    credentials: true,
   })
 );
 
@@ -58,6 +75,7 @@ app.use("/api/reports",reportRoutes);
 app.use("/api/opportunities", opportunityRoutes);
 app.use("/api/announcements", announcementRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/messages", messageRoutes);
 
 //global Error handling
 app.use(notFoundMiddleware);

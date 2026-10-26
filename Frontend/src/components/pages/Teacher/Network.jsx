@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API from "../../../api";
+import UserProfileModal from "../../common/UserProfileModal";
 import "../../../styles/TeacherStyle/TeacherNetwork.css";
 
 const Network = () => {
@@ -11,6 +12,7 @@ const Network = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState("");
+  const [selectedMember, setSelectedMember] = useState(null);
 
   const filters = [
     {
@@ -104,17 +106,60 @@ const Network = () => {
     setLoading(true);
 
     try {
-      /*
-       * If your backend already has a network endpoint,
-       * this will use it.
-       */
-      const res = await API.get("/users");
+      const [usersRes, statusRes] = await Promise.allSettled([
+        API.get("/users"),
+        API.get("/connections/statuses"),
+      ]);
 
-      const data = res.data?.users || res.data?.members || res.data || [];
+      const data =
+        usersRes.status === "fulfilled"
+          ? usersRes.value?.data?.users || usersRes.value?.data || []
+          : [];
 
-      setMembers(
-        Array.isArray(data) ? data.map(normalizeMember) : []
-      );
+      const connections =
+        statusRes.status === "fulfilled"
+          ? statusRes.value?.data?.connections || []
+          : [];
+
+      const connectionMap = {};
+      connections.forEach((conn) => {
+        const senderId = conn.sender?._id || conn.sender;
+        const receiverId = conn.receiver?._id || conn.receiver;
+        if (senderId) {
+          connectionMap[senderId] = { status: conn.status, isSender: true, id: conn._id };
+        }
+        if (receiverId) {
+          connectionMap[receiverId] = { status: conn.status, isSender: false, id: conn._id };
+        }
+      });
+
+      const normalized = Array.isArray(data)
+        ? data
+            .filter((item) => (item?.role || item?.userRole || "").toLowerCase() !== "admin")
+            .map((item) => {
+              const memberObj = normalizeMember(item);
+              const conn = connectionMap[memberObj._id];
+              if (conn) {
+                if (conn.status === "accepted") {
+                  memberObj.connectionState = "connected";
+                  memberObj.connected = true;
+                } else if (conn.status === "pending") {
+                  memberObj.connectionState = conn.isSender ? "pending" : "incoming";
+                  memberObj.connected = false;
+                } else {
+                  memberObj.connectionState = "none";
+                  memberObj.connected = false;
+                }
+                memberObj.connectionId = conn.id;
+              } else {
+                memberObj.connectionState = "none";
+                memberObj.connected = false;
+              }
+              return memberObj;
+            })
+        : [];
+
+      setMembers(normalized);
     } catch (error) {
       console.error("Failed to fetch network:", error);
       setMembers([]);
@@ -176,22 +221,24 @@ const Network = () => {
   ).length;
 
   const handleConnect = async (member) => {
-    if (member.connected) {
-      showToast(`You are already connected with ${member.name}`);
+    if (member.connectionState === "pending") {
+      handleCancelConnection(member);
+      return;
+    }
+
+    if (member.connected || member.connectionState === "connected") {
+      handleDisconnect(member);
       return;
     }
 
     try {
-      /*
-       * Connect endpoint can be connected to your backend
-       * whenever the API route is available.
-       */
-      await API.post(`/users/${member._id}/connect`);
+      const res = await API.post(`/connections/${member._id}`);
+      const connectionId = res.data?.connection?._id;
 
       setMembers((prev) =>
         prev.map((item) =>
           item._id === member._id
-            ? { ...item, connected: true }
+            ? { ...item, connectionState: "pending", connectionId, connected: false }
             : item
         )
       );
@@ -199,20 +246,86 @@ const Network = () => {
       showToast(`Connection request sent to ${member.name}`);
     } catch (error) {
       console.error("Failed to connect:", error);
+      showToast(error.response?.data?.message || "Could not send connection request");
+    }
+  };
 
-      /*
-       * Keep UI interactive even when backend endpoint
-       * is not configured yet.
-       */
+  const handleCancelConnection = async (member) => {
+    if (!member?._id) return;
+
+    try {
+      if (member.connectionId) {
+        await API.delete(`/connections/${member.connectionId}/cancel`);
+      } else {
+        const statusRes = await API.get("/connections/statuses");
+        const connections = statusRes.data?.connections || [];
+        const match = connections.find(
+          (c) =>
+            (c.receiver?._id === member._id || c.receiver === member._id || c.sender?._id === member._id || c.sender === member._id) &&
+            c.status === "pending"
+        );
+        if (match) {
+          await API.delete(`/connections/${match._id}/cancel`);
+        }
+      }
+
       setMembers((prev) =>
         prev.map((item) =>
           item._id === member._id
-            ? { ...item, connected: true }
+            ? {
+                ...item,
+                connectionState: "none",
+                connectionId: null,
+                connected: false,
+              }
             : item
         )
       );
 
-      showToast(`Connection request sent to ${member.name}`);
+      showToast(`Cancelled connection request to ${member.name}`);
+    } catch (error) {
+      console.error("Cancel request error:", error);
+      setMembers((prev) =>
+        prev.map((item) =>
+          item._id === member._id
+            ? {
+                ...item,
+                connectionState: "none",
+                connectionId: null,
+                connected: false,
+              }
+            : item
+        )
+      );
+      showToast(`Cancelled connection request to ${member.name}`);
+    }
+  };
+
+  const handleDisconnect = async (member) => {
+    if (!member?._id) return;
+
+    try {
+      if (member.connectionId) {
+        await API.delete(`/connections/${member.connectionId}`);
+      }
+
+      setMembers((prev) =>
+        prev.map((item) =>
+          item._id === member._id
+            ? {
+                ...item,
+                connectionState: "none",
+                connectionId: null,
+                connected: false,
+              }
+            : item
+        )
+      );
+
+      showToast(`Removed ${member.name} from your network`);
+    } catch (error) {
+      console.error("Disconnect error:", error);
+      showToast("Could not disconnect");
     }
   };
 
@@ -424,6 +537,8 @@ const Network = () => {
                     <div
                       className={`network-member-avatar ${isFaculty ? "faculty-avatar" : "student-avatar"
                         }`}
+                      style={{ cursor: "pointer" }}
+                      onClick={() => setSelectedMember(member)}
                     >
                       {member.avatar?.length <= 3
                         ? member.avatar
@@ -447,7 +562,7 @@ const Network = () => {
                   </div>
 
                   <div className="network-member-info">
-                    <h3>{member.name}</h3>
+                    <h3 style={{ cursor: "pointer" }} onClick={() => setSelectedMember(member)}>{member.name}</h3>
 
                     <span className="network-designation">
                       {member.designation}
@@ -473,27 +588,94 @@ const Network = () => {
                       type="button"
                       className="network-message-btn"
                       onClick={() => handleMessage(member)}
+                      style={{
+                        backgroundColor: "#f8fafc",
+                        color: "#1e293b",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        padding: "8px 16px",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px"
+                      }}
                     >
                       <i className="fas fa-comment-dots"></i>
                       Message
                     </button>
 
-                    <button
-                      type="button"
-                      className={`network-connect-btn ${member.connected ? "connected" : ""
-                        }`}
-                      onClick={() => handleConnect(member)}
-                    >
-                      <i
-                        className={
-                          member.connected
-                            ? "fas fa-check"
-                            : "fas fa-user-plus"
-                        }
-                      ></i>
-
-                      {member.connected ? "Connected" : "Connect"}
-                    </button>
+                    {member.connectionState === "pending" ? (
+                      <button
+                        type="button"
+                        className="network-connect-btn pending"
+                        onClick={() => handleCancelConnection(member)}
+                        style={{
+                          backgroundColor: "#f59e0b",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "8px 16px",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          boxShadow: "0 4px 10px rgba(245, 158, 11, 0.25)"
+                        }}
+                        title="Click to cancel connection request"
+                      >
+                        <i className="fas fa-clock"></i>
+                        Pending
+                      </button>
+                    ) : member.connected || member.connectionState === "connected" ? (
+                      <button
+                        type="button"
+                        className="network-connect-btn connected"
+                        onClick={() => handleDisconnect(member)}
+                        style={{
+                          backgroundColor: "#dcfce7",
+                          color: "#15803d",
+                          border: "1px solid #bbf7d0",
+                          borderRadius: "8px",
+                          padding: "8px 16px",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px"
+                        }}
+                      >
+                        <i className="fas fa-check"></i>
+                        Connected
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="network-connect-btn"
+                        onClick={() => handleConnect(member)}
+                        style={{
+                          backgroundColor: "#ea580c",
+                          color: "#ffffff",
+                          border: "none",
+                          borderRadius: "8px",
+                          padding: "8px 16px",
+                          fontWeight: "700",
+                          cursor: "pointer",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "6px",
+                          boxShadow: "0 4px 12px rgba(234, 88, 12, 0.3)"
+                        }}
+                      >
+                        <i className="fas fa-user-plus"></i>
+                        Connect
+                      </button>
+                    )}
                   </div>
                 </article>
               );
@@ -558,6 +740,14 @@ const Network = () => {
           <i className="fas fa-arrow-right"></i>
         </button>
       </section>
+
+      {selectedMember && (
+        <UserProfileModal
+          user={selectedMember}
+          userId={selectedMember._id}
+          onClose={() => setSelectedMember(null)}
+        />
+      )}
 
       {/* =====================================================
           TOAST

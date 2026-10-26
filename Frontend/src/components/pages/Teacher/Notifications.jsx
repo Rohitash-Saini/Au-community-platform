@@ -68,48 +68,44 @@ const FALLBACK_NOTIFICATIONS = [
 
 
 const normalizeNotification = (item, index) => {
-  const type =
+  const type = (
     item?.type ||
     item?.notificationType ||
     item?.category ||
-    "system";
+    "system"
+  ).toLowerCase();
 
   return {
+    ...item,
     _id:
       item?._id ||
       item?.id ||
       `notification-${index}`,
-
+    relatedId: item?.relatedId || item?.connectionId || null,
     type,
-
     title:
       item?.title ||
-      item?.subject ||
-      item?.heading ||
-      "New notification",
-
+      (type === "connection_request" ? "Connection Request" : item?.subject || item?.heading || "New notification"),
     message:
       item?.message ||
       item?.description ||
       item?.text ||
       "You have a new notification.",
-
     time:
       item?.time ||
       item?.createdAt ||
       item?.timestamp ||
       "Recently",
-
     read:
       Boolean(
         item?.read ??
         item?.isRead ??
         false
       ),
-
     icon:
       item?.icon ||
       getNotificationIcon(type),
+    actionDone: null,
   };
 };
 
@@ -158,69 +154,134 @@ const getNotificationIcon = (type) => {
 
 
 const TeacherNotifications = () => {
-  const [notifications, setNotifications] =
-    useState([]);
-
-  const [loading, setLoading] =
-    useState(true);
-
-  const [activeFilter, setActiveFilter] =
-    useState("all");
-
-  const [toast, setToast] =
-    useState("");
-
-
-  /* =====================================================
-     FETCH NOTIFICATIONS
-     ===================================================== */
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activeFilter, setActiveFilter] = useState("all");
+  const [toast, setToast] = useState("");
+  const [processingId, setProcessingId] = useState(null);
 
   useEffect(() => {
     fetchNotifications();
   }, []);
 
-
   const fetchNotifications = async () => {
     setLoading(true);
 
     try {
-      const response =
-        await API.get("/notifications");
+      const [notifRes, reqRes, annRes] = await Promise.allSettled([
+        API.get("/notifications"),
+        API.get("/connections/requests"),
+        API.get("/announcements"),
+      ]);
 
-      const data =
-        response?.data?.notifications ||
-        response?.data?.data ||
-        response?.data ||
-        [];
+      const notifData =
+        notifRes.status === "fulfilled"
+          ? Array.isArray(notifRes.value?.data)
+            ? notifRes.value.data
+            : notifRes.value?.data?.notifications || []
+          : [];
 
-      if (
-        Array.isArray(data) &&
-        data.length > 0
-      ) {
-        setNotifications(
-          data.map((item, index) =>
-            normalizeNotification(
-              item,
-              index
-            )
-          )
-        );
-      } else {
-        setNotifications(
-          FALLBACK_NOTIFICATIONS
-        );
-      }
+      const pendingRequests =
+        reqRes.status === "fulfilled"
+          ? reqRes.value?.data?.requests || []
+          : [];
+
+      const announcementData =
+        annRes.status === "fulfilled"
+          ? annRes.value?.data?.announcements || annRes.value?.data || []
+          : [];
+
+      const connectionNotifications = pendingRequests.map((req, idx) => ({
+        _id: `conn-req-${req.connectionId || idx}`,
+        relatedId: req.connectionId,
+        type: "connection_request",
+        title: "Connection Request",
+        message: `${req.sender?.name || "A community member"} sent you a connection request.`,
+        time: req.sentAt ? new Date(req.sentAt).toLocaleDateString("en-IN") : "Recently",
+        read: false,
+        actionDone: null,
+      }));
+
+      const announcementNotifications = Array.isArray(announcementData)
+        ? announcementData.map((ann, idx) => ({
+            _id: `announcement-${ann._id || idx}`,
+            type: "announcement",
+            title: ann.title || "Announcement",
+            message: ann.content || ann.title || "New announcement published.",
+            time: ann.createdAt ? new Date(ann.createdAt).toLocaleDateString("en-IN") : "Recently",
+            read: false,
+            actionDone: null,
+          }))
+        : [];
+
+      const existingRelatedIds = new Set(
+        notifData
+          .filter((n) => n.relatedId)
+          .map((n) => String(n.relatedId))
+      );
+
+      const uniquePendingConns = connectionNotifications.filter(
+        (c) => !existingRelatedIds.has(String(c.relatedId))
+      );
+
+      const combined = [
+        ...uniquePendingConns,
+        ...announcementNotifications,
+        ...notifData.map(normalizeNotification),
+      ];
+
+      setNotifications(combined);
     } catch (error) {
-      console.error(
-        "Failed to fetch notifications:",
-        error
-      );
-
-      setNotifications(
-        FALLBACK_NOTIFICATIONS
-      );
+      console.error("Failed to fetch notifications:", error);
+      setNotifications([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleAcceptConnection = async (notification, event) => {
+    event?.stopPropagation();
+    const connId = notification.relatedId || notification.connectionId || notification._id;
+    setProcessingId(notification._id);
+
+    try {
+      await API.put(`/connections/${connId}/accept`);
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item._id === notification._id
+            ? { ...item, actionDone: "accepted", message: "Connection request accepted ✔️", read: true }
+            : item
+        )
+      );
+      setToast("Connection request accepted!");
+    } catch (error) {
+      console.error("Failed to accept connection:", error);
+      setToast(error.response?.data?.message || "Failed to accept connection");
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const handleRejectConnection = async (notification, event) => {
+    event?.stopPropagation();
+    const connId = notification.relatedId || notification.connectionId || notification._id;
+    setProcessingId(notification._id);
+
+    try {
+      await API.put(`/connections/${connId}/reject`);
+      setNotifications((prev) =>
+        prev.map((item) =>
+          item._id === notification._id
+            ? { ...item, actionDone: "rejected", message: "Connection request declined ✖️", read: true }
+            : item
+        )
+      );
+      setToast("Connection request declined.");
+    } catch (error) {
+      console.error("Failed to reject connection:", error);
+      setToast(error.response?.data?.message || "Failed to decline connection");
+    } finally {
+      setProcessingId(null);
     }
   };
 
@@ -788,6 +849,61 @@ const TeacherNotifications = () => {
                     <p>
                       {notification.message}
                     </p>
+
+                    {(notification.type === "connection_request" || notification.type === "connection") && (
+                      <div className="connection-request-actions" style={{ marginTop: "10px", display: "flex", gap: "10px", alignItems: "center" }}>
+                        {notification.actionDone === "accepted" ? (
+                          <span style={{ color: "#10b981", fontWeight: "600", fontSize: "0.9rem" }}>
+                            <i className="fa-solid fa-circle-check" style={{ marginRight: "4px" }}></i> Request Accepted
+                          </span>
+                        ) : notification.actionDone === "rejected" ? (
+                          <span style={{ color: "#ef4444", fontWeight: "600", fontSize: "0.9rem" }}>
+                            <i className="fa-solid fa-circle-xmark" style={{ marginRight: "4px" }}></i> Request Declined
+                          </span>
+                        ) : (
+                          <>
+                            <button
+                              type="button"
+                              style={{
+                                backgroundColor: "#10b981",
+                                color: "#ffffff",
+                                border: "none",
+                                borderRadius: "6px",
+                                padding: "6px 14px",
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px"
+                              }}
+                              disabled={processingId === notification._id}
+                              onClick={(e) => handleAcceptConnection(notification, e)}
+                            >
+                              <i className="fa-solid fa-check"></i> Accept
+                            </button>
+                            <button
+                              type="button"
+                              style={{
+                                backgroundColor: "#ef4444",
+                                color: "#ffffff",
+                                border: "none",
+                                borderRadius: "6px",
+                                padding: "6px 14px",
+                                cursor: "pointer",
+                                fontWeight: "600",
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: "6px"
+                              }}
+                              disabled={processingId === notification._id}
+                              onClick={(e) => handleRejectConnection(notification, e)}
+                            >
+                              <i className="fa-solid fa-xmark"></i> Reject
+                            </button>
+                          </>
+                        )}
+                      </div>
+                    )}
 
 
                     <div className="notification-actions">

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import API from "../../../api";
+import UserProfileModal from "../../common/UserProfileModal";
 import "../../../styles/StudentStyle/StudentNetwork.css";
 
 const fallbackMembers = [];
@@ -106,17 +107,60 @@ const Network = () => {
     try {
       setLoading(true);
 
-      const response = await API.get("/users");
+      const [usersRes, statusRes] = await Promise.allSettled([
+        API.get("/users"),
+        API.get("/connections/statuses"),
+      ]);
 
       const data =
-        response?.data?.users ||
-        response?.data?.members ||
-        response?.data ||
-        [];
+        usersRes.status === "fulfilled"
+          ? usersRes.value?.data?.users || usersRes.value?.data || []
+          : [];
 
-      setMembers(
-        Array.isArray(data) ? data.map(normalizeMember) : []
-      );
+      const connections =
+        statusRes.status === "fulfilled"
+          ? statusRes.value?.data?.connections || []
+          : [];
+
+      const connectionMap = {};
+      connections.forEach((conn) => {
+        const senderId = conn.sender?._id || conn.sender;
+        const receiverId = conn.receiver?._id || conn.receiver;
+        if (senderId) {
+          connectionMap[senderId] = { status: conn.status, isSender: true, id: conn._id };
+        }
+        if (receiverId) {
+          connectionMap[receiverId] = { status: conn.status, isSender: false, id: conn._id };
+        }
+      });
+
+      const normalized = Array.isArray(data)
+        ? data
+          .filter((item) => (item?.role || item?.userRole || "").toLowerCase() !== "admin")
+          .map((item, index) => {
+            const memberObj = normalizeMember(item, index);
+            const conn = connectionMap[memberObj._id];
+            if (conn) {
+              if (conn.status === "accepted") {
+                memberObj.connectionState = "connected";
+                memberObj.connected = true;
+              } else if (conn.status === "pending") {
+                memberObj.connectionState = conn.isSender ? "pending" : "incoming";
+                memberObj.connected = false;
+              } else {
+                memberObj.connectionState = "none";
+                memberObj.connected = false;
+              }
+              memberObj.connectionId = conn.id;
+            } else {
+              memberObj.connectionState = "none";
+              memberObj.connected = false;
+            }
+            return memberObj;
+          })
+        : [];
+
+      setMembers(normalized);
     } catch (error) {
       console.log("Failed to fetch network members:", error);
       setMembers([]);
@@ -138,27 +182,26 @@ const Network = () => {
 
     try {
       setConnectingId(member._id);
-
-      try {
-        await API.post(`/users/${member._id}/connect`);
-      } catch (error) {
-        console.log(
-          "Connection API unavailable, updating UI locally."
-        );
-      }
+      const res = await API.post(`/connections/${member._id}`);
+      const connectionId = res.data?.connection?._id;
 
       setMembers((prev) =>
         prev.map((item) =>
           item._id === member._id
             ? {
               ...item,
-              connected: true,
+              connectionState: "pending",
+              connectionId,
+              connected: false,
             }
             : item
         )
       );
 
       showToast(`Connection request sent to ${member.name}`);
+    } catch (error) {
+      console.error("Connection request error:", error);
+      showToast(error.response?.data?.message || "Could not send connection request");
     } finally {
       setConnectingId(null);
     }
@@ -170,12 +213,8 @@ const Network = () => {
     try {
       setConnectingId(member._id);
 
-      try {
-        await API.post(`/users/${member._id}/disconnect`);
-      } catch (error) {
-        console.log(
-          "Disconnect API unavailable, updating UI locally."
-        );
+      if (member.connectionId) {
+        await API.delete(`/connections/${member.connectionId}`);
       }
 
       setMembers((prev) =>
@@ -183,6 +222,8 @@ const Network = () => {
           item._id === member._id
             ? {
               ...item,
+              connectionState: "none",
+              connectionId: null,
               connected: false,
             }
             : item
@@ -190,6 +231,64 @@ const Network = () => {
       );
 
       showToast(`Removed ${member.name} from your network`);
+    } catch (error) {
+      console.error("Disconnect error:", error);
+      showToast("Could not disconnect");
+    } finally {
+      setConnectingId(null);
+    }
+  };
+
+  const handleCancelConnection = async (member) => {
+    if (!member?._id || connectingId) return;
+
+    try {
+      setConnectingId(member._id);
+
+      if (member.connectionId) {
+        await API.delete(`/connections/${member.connectionId}/cancel`);
+      } else {
+        const statusRes = await API.get("/connections/statuses");
+        const connections = statusRes.data?.connections || [];
+        const match = connections.find(
+          (c) =>
+            (c.receiver?._id === member._id || c.receiver === member._id || c.sender?._id === member._id || c.sender === member._id) &&
+            c.status === "pending"
+        );
+        if (match) {
+          await API.delete(`/connections/${match._id}/cancel`);
+        }
+      }
+
+      setMembers((prev) =>
+        prev.map((item) =>
+          item._id === member._id
+            ? {
+              ...item,
+              connectionState: "none",
+              connectionId: null,
+              connected: false,
+            }
+            : item
+        )
+      );
+
+      showToast(`Cancelled connection request to ${member.name}`);
+    } catch (error) {
+      console.error("Cancel request error:", error);
+      setMembers((prev) =>
+        prev.map((item) =>
+          item._id === member._id
+            ? {
+              ...item,
+              connectionState: "none",
+              connectionId: null,
+              connected: false,
+            }
+            : item
+        )
+      );
+      showToast(`Cancelled connection request to ${member.name}`);
     } finally {
       setConnectingId(null);
     }
@@ -551,7 +650,7 @@ const Network = () => {
 
                 <div className="student-network-card-body">
 
-                  <div className="student-network-avatar-wrap">
+                  <div className="student-network-avatar-wrap" style={{ cursor: "pointer" }} onClick={() => openDetails(member)}>
 
                     <span
                       className={
@@ -575,7 +674,7 @@ const Network = () => {
 
                   <div className="student-network-person">
 
-                    <h3>{member.name}</h3>
+                    <h3 style={{ cursor: "pointer" }} onClick={() => openDetails(member)}>{member.name}</h3>
 
                     {member.designation && (
                       <span className="network-designation">
@@ -642,99 +741,168 @@ const Network = () => {
                       type="button"
                       className="network-view-btn"
                       onClick={() => openDetails(member)}
+                      style={{
+                        backgroundColor: "#f8fafc",
+                        color: "#1e293b",
+                        border: "1px solid #cbd5e1",
+                        borderRadius: "8px",
+                        padding: "8px 16px",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px"
+                      }}
                     >
                       <i className="fas fa-eye"></i>
                       View
                     </button>
 
 
-                    {member.connected ? (
-                      <button
-                        type="button"
-                        className="network-connected-btn"
-                        onClick={() =>
-                          handleDisconnect(member)
-                        }
-                        disabled={
-                          connectingId === member._id
-                        }
-                      >
-                        <i className="fas fa-check"></i>
-                        Connected
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="network-connect-btn"
-                        onClick={() =>
-                          handleConnect(member)
-                        }
-                        disabled={
-                          connectingId === member._id
-                        }
-                      >
-                        {connectingId === member._id ? (
-                          <>
-                            <span className="network-button-loader"></span>
-                            Sending...
-                          </>
-                        ) : (
-                          <>
-                            <i className="fas fa-user-plus"></i>
-                            Connect
-                          </>
-                        )}
-                      </button>
-                    )}
+                  {member.connectionState === "connected" || member.connected ? (
+                    <button
+                      type="button"
+                      className="network-connected-btn"
+                      onClick={() =>
+                        handleDisconnect(member)
+                      }
+                      disabled={
+                        connectingId === member._id
+                      }
+                      style={{
+                        backgroundColor: "#dcfce7",
+                        color: "#15803d",
+                        border: "1px solid #bbf7d0",
+                        borderRadius: "8px",
+                        padding: "8px 16px",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        gap: "6px"
+                      }}
+                    >
+                  <i className="fas fa-check"></i>
+                  Connected
+                </button>
+                ) : member.connectionState === "pending" ? (
+                <button
+                  type="button"
+                  className="network-pending-btn"
+                  onClick={() =>
+                    handleCancelConnection(member)
+                  }
+                  disabled={
+                    connectingId === member._id
+                  }
+                  style={{
+                    backgroundColor: "#f59e0b",
+                    color: "#ffffff",
+                    border: "none",
+                    borderRadius: "8px",
+                    padding: "8px 16px",
+                    fontWeight: "700",
+                    cursor: "pointer",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "6px",
+                    boxShadow: "0 4px 10px rgba(245, 158, 11, 0.25)"
+                  }}
+                  title="Click to cancel connection request"
+                >
+                <i className="fas fa-clock"></i>
+                Pending
+              </button>
+            ) : (
+            <button
+              type="button"
+              className="network-connect-btn"
+              onClick={() =>
+                handleConnect(member)
+              }
+              disabled={
+                connectingId === member._id
+              }
+              style={{
+                backgroundColor: "#ea580c",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "8px",
+                padding: "8px 16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                boxShadow: "0 4px 12px rgba(234, 88, 12, 0.3)"
+              }}
+            >
+            {connectingId === member._id ? (
+              <>
+                <span className="network-button-loader"></span>
+                Sending...
+              </>
+            ) : (
+              <>
+                <i className="fas fa-user-plus"></i>
+                Connect
+              </>
+            )}
+          </button>
+        )}
 
-                  </div>
+    </div>
 
-                </div>
+                </div >
 
-              </article>
+              </article >
 
             ))}
 
-          </div>
+          </div >
 
         ) : (
 
-          <div className="student-network-empty">
+  <div className="student-network-empty">
 
-            <div className="student-network-empty-icon">
-              <i className="fas fa-user-friends"></i>
-            </div>
+    <div className="student-network-empty-icon">
+      <i className="fas fa-user-friends"></i>
+    </div>
 
-            <h3>No members found</h3>
+    <h3>No members found</h3>
 
-            <p>
-              We couldn't find anyone matching your
-              current search or filter.
-            </p>
+    <p>
+      We couldn't find anyone matching your
+      current search or filter.
+    </p>
 
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setActiveFilter("all");
-              }}
-            >
-              <i className="fas fa-redo"></i>
-              Reset Search
-            </button>
+    <button
+      type="button"
+      onClick={() => {
+        setSearch("");
+        setActiveFilter("all");
+      }}
+    >
+      <i className="fas fa-redo"></i>
+      Reset Search
+    </button>
 
-          </div>
+  </div>
 
-        )}
+)}
 
-      </section>
+      </section >
 
 
-      {/* =====================================================
+{/* =====================================================
           CTA
       ====================================================== */}
 
-      <section className="student-network-cta">
+  < section className = "student-network-cta" >
 
         <div className="student-network-cta-content">
 
@@ -759,224 +927,43 @@ const Network = () => {
           <i className="fas fa-handshake"></i>
         </div>
 
-      </section>
+      </section >
 
 
-      {/* =====================================================
+{/* =====================================================
           DETAILS MODAL
       ====================================================== */}
 
-      {showDetails && selectedMember && (
-
-        <div
-          className="student-network-modal-overlay"
-          onMouseDown={(event) => {
-            if (
-              event.target.classList.contains(
-                "student-network-modal-overlay"
-              )
-            ) {
-              closeDetails();
-            }
-          }}
-        >
-
-          <div className="student-network-modal">
-
-            <div className="student-network-modal-head">
-
-              <div>
-                <span className="student-network-section-label">
-                  Community Member
-                </span>
-
-                <h2>Profile Details</h2>
-              </div>
-
-              <button
-                type="button"
-                onClick={closeDetails}
-                aria-label="Close"
-              >
-                <i className="fas fa-times"></i>
-              </button>
-
-            </div>
+{
+  showDetails && selectedMember && (
+    <UserProfileModal
+      user={selectedMember}
+      userId={selectedMember._id}
+      onClose={closeDetails}
+    />
+  )
+}
 
 
-            <div className="student-network-modal-body">
-
-              <div className="network-modal-profile">
-
-                <span
-                  className={
-                    selectedMember.role === "teacher" ||
-                      selectedMember.role === "faculty"
-                      ? "student-network-modal-avatar faculty"
-                      : "student-network-modal-avatar"
-                  }
-                >
-                  {selectedMember.avatar}
-                </span>
-
-                <div>
-                  <h3>{selectedMember.name}</h3>
-
-                  <span>
-                    {getRoleLabel(selectedMember.role)}
-                  </span>
-
-                  <strong>
-                    {selectedMember.department}
-                  </strong>
-                </div>
-
-              </div>
-
-
-              <div className="network-modal-info-grid">
-
-                <div>
-                  <small>Department</small>
-                  <strong>
-                    {selectedMember.department}
-                  </strong>
-                </div>
-
-                <div>
-                  <small>Location</small>
-                  <strong>
-                    {selectedMember.location || "Not added"}
-                  </strong>
-                </div>
-
-                {selectedMember.batch && (
-                  <div>
-                    <small>Batch</small>
-                    <strong>
-                      {selectedMember.batch}
-                    </strong>
-                  </div>
-                )}
-
-                {selectedMember.designation && (
-                  <div>
-                    <small>Designation</small>
-                    <strong>
-                      {selectedMember.designation}
-                    </strong>
-                  </div>
-                )}
-
-              </div>
-
-
-              <div className="network-modal-about">
-
-                <span>About</span>
-
-                <p>
-                  {selectedMember.bio ||
-                    "No introduction has been added yet."}
-                </p>
-
-              </div>
-
-
-              {selectedMember.skills?.length > 0 && (
-
-                <div className="network-modal-skills">
-
-                  <span>Skills & Interests</span>
-
-                  <div>
-
-                    {selectedMember.skills.map(
-                      (skill, index) => (
-                        <span key={`${skill}-${index}`}>
-                          {typeof skill === "string"
-                            ? skill
-                            : skill?.name || "Skill"}
-                        </span>
-                      )
-                    )}
-
-                  </div>
-
-                </div>
-
-              )}
-
-            </div>
-
-
-            <div className="student-network-modal-foot">
-
-              <button
-                type="button"
-                className="network-modal-close"
-                onClick={closeDetails}
-              >
-                Close
-              </button>
-
-
-              {selectedMember.connected ? (
-
-                <button
-                  type="button"
-                  className="network-modal-connected"
-                  onClick={() => {
-                    handleDisconnect(selectedMember);
-                    closeDetails();
-                  }}
-                >
-                  <i className="fas fa-check"></i>
-                  Connected
-                </button>
-
-              ) : (
-
-                <button
-                  type="button"
-                  className="network-modal-connect"
-                  onClick={() => {
-                    handleConnect(selectedMember);
-                    closeDetails();
-                  }}
-                >
-                  <i className="fas fa-user-plus"></i>
-                  Connect
-                </button>
-
-              )}
-
-            </div>
-
-          </div>
-
-        </div>
-
-      )}
-
-
-      {/* =====================================================
+{/* =====================================================
           TOAST
       ====================================================== */}
 
-      {toast && (
+{
+  toast && (
 
-        <div className="student-network-toast">
+    <div className="student-network-toast">
 
-          <i className="fas fa-check-circle"></i>
+      <i className="fas fa-check-circle"></i>
 
-          <span>{toast}</span>
-
-        </div>
-
-      )}
+      <span>{toast}</span>
 
     </div>
+
+  )
+}
+
+    </div >
   );
 };
 

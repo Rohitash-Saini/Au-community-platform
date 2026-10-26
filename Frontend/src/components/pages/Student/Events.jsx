@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import API from "../../../api";
+import ExpandableText from "../../common/ExpandableText";
 import "../../../styles/StudentStyle/StudentEvents.css";
 
 const fallbackEvents = [];
@@ -431,11 +432,13 @@ function Event() {
                   {/* CARD TOP */}
                   <div className="student-event-card-top">
                     {event.image ? (
-                      <img
-                        src={event.image}
-                        alt={event.title}
-                        className="student-event-card-image"
-                      />
+                      <div style={{ width: '100%', height: '220px', borderRadius: '10px', overflow: 'hidden', backgroundColor: '#0f172a', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <img
+                          src={event.image}
+                          alt={event.title}
+                          style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+                        />
+                      </div>
                     ) : (
                       <div className="student-event-card-art">
                         <span>
@@ -465,9 +468,9 @@ function Event() {
                       {event.organizer}
                     </p>
 
-                    <p className="student-event-description">
-                      {event.description}
-                    </p>
+                    <div className="student-event-description" style={{ margin: "8px 0" }}>
+                      <ExpandableText text={event.description} linesLimit={3} charLimit={160} />
+                    </div>
 
                     <div className="student-event-meta">
                       <span>

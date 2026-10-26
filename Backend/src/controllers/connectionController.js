@@ -131,6 +131,16 @@ const acceptConnectionRequest = async (req, res) => {
 
     await connection.save();
 
+    // Create notification for sender
+    const receiver = await User.findById(userId);
+    await Notification.create({
+      recipient: connection.sender,
+      sender: userId,
+      type: "connection_accepted",
+      message: `${receiver ? receiver.name : "A user"} accepted your connection request`,
+      relatedId: connection._id,
+    });
+
     return res.status(200).json({
       success: true,
       message: "Connection request accepted successfully",
@@ -378,7 +388,32 @@ const getPendingRequests = async (req, res) => {
   }
 };
 
+const getAllConnectionStatuses = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+
+    const connections = await Connection.find({
+      $or: [
+        { sender: userId },
+        { receiver: userId },
+      ],
+    });
+
+    return res.status(200).json({
+      success: true,
+      connections,
+    });
+  } catch (error) {
+    console.error("Get connection statuses error:", error.message);
+
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
+  }
+};
+
 module.exports = {
   sendConnectionRequest, acceptConnectionRequest, rejectConnectionRequest,cancelConnectionRequest,removeConnection,getMyConnections,
-  getPendingRequests
+  getPendingRequests, getAllConnectionStatuses
 };

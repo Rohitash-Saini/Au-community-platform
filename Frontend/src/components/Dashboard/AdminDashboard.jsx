@@ -118,7 +118,7 @@ function AdminDashboard() {
         <div className="sidebar-brand">
           <div className="sidebar-logo">AU</div>
           <div className="sidebar-title">
-            <span className="sidebar-title-main">FOUNDATION</span>
+            <span className="sidebar-title-main">Community</span>
             <span className="sidebar-title-sub">Learn · Connect · Grow</span>
           </div>
           <i className="fas fa-times sidebar-close" onClick={() => setIsSidebarOpen(false)}></i>
